@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+        <meta name="theme-color" content="#0b0d19">
+    <meta name="description" content="Интерактивный проект о Г.В. Кисунько: квест, «Полигон испытаний» и галерея.">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+<title>Проект 1430 - Г.В. Кисунько</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loadingScreen">
+        <div class="project-logo">
+            <div class="radar-icon"></div>
+        </div>
+        <div class="title-typewriter" id="titleTypewriter"></div>
+        <div class="subtitle-loading">
+            <span class="loading-dots">Инициализация исторического архива</span>
+        </div>
+        <div class="menu-buttons" id="menuButtons">
+            <div class="menu-group" id="questMenuGroup">
+                <button class="menu-btn" type="button" id="questMainBtn" onclick="continueQuest()">ТЕКСТОВЫЙ КВЕСТ</button>
+                <div class="menu-note hidden" id="questProgressNote" aria-live="polite"></div>
+                <button class="menu-btn menu-btn-secondary hidden" type="button" id="questRestartBtn" onclick="restartQuest()">НАЧАТЬ ЗАНОВО</button>
+            </div>
+            <!-- Переименовываем режим Tower Defense в "Полигон Испытаний" -->
+            <button class="menu-btn" type="button" onclick="startDefense()">ПОЛИГОН ИСПЫТАНИЙ</button>
+            <button class="menu-btn" type="button" onclick="startGallery()">ГАЛЕРЕЯ</button>
+        </div>
+        <div class="menu-footer" id="menuFooter">
+            Авторы: Марыкин Тимофей и Максим Трушин • Проект 1430
+            <span class="menu-consultant">Консультант: Руководитель музея истории создания противоракетной обороны «Звезды в пустыне» ГБОУ г. Москвы «Школа № 1430», Давидович Анна Павловна.</span>
+        </div>
+    </div>
+
+    <!-- Main Application -->
+    <div id="app">
+        <button class="back-btn" type="button" onclick="returnToMenu()">← МЕНЮ</button>
+        
+        <!-- Quest Mode -->
+        <div id="questMode" class="hidden">
+            <div class="quest-container" id="questContainer"></div>
+        </div>
+
+        <!-- Tower Defense Mode -->
+        <div id="defenseMode" class="hidden">
+            <div class="defense-container">
+                <div class="game-header">
+                    <!-- Обновляем заголовок режима обороны в соответствии с новым названием -->
+                    <h2 class="mode-title">ПОЛИГОН ИСПЫТАНИЙ</h2>
+
+                    <div class="stats" aria-label="Статистика полигона">
+                        <div class="stat-item">
+                            <span class="stat-label">Здоровье:</span>
+                            <span class="stat-value" id="health">100</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Ресурсы:</span>
+                            <span class="stat-value" id="resources">1000</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Волна:</span>
+                            <span class="stat-value" id="wave">1</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Осталось:</span>
+                            <span class="stat-value" id="enemiesLeft">0</span>
+                        </div>
+                    </div>
+
+                    <div class="defense-controls" aria-label="Управление полигоном">
+                        <button class="defense-btn" type="button" id="pauseBtn" aria-pressed="false" title="Пауза (P)">⏸</button>
+                        <button class="defense-btn" type="button" id="speedBtn" aria-pressed="false" title="Скорость (X)">⏩ x1</button>
+                    </div>
+                </div>
+
+                <!-- Удаляем атрибуты width/height, чтобы размеры задавались исключительно через CSS для адаптивности -->
+                <canvas id="gameCanvas" class="game-canvas"></canvas>
+
+                <div class="tower-actions hidden" id="towerActions" aria-hidden="true"></div>
+
+                <!-- Mobile bottom sheet: Towers / Fact tabs (no overlapping panels on phones) -->
+                <div class="defense-sheet" id="defenseSheet" aria-label="Панель управления полигоном">
+                    <div class="defense-sheet-handle" id="defenseSheetHandle" role="button" tabindex="0" aria-label="Изменить высоту панели"></div>
+                    <div class="defense-sheet-tabs" role="tablist" aria-label="Панель: Башни и Факт">
+                        <button class="defense-sheet-tab is-active" type="button" id="sheetTabTowers" role="tab"
+                            aria-selected="true" aria-controls="sheetPanelTowers">Башни</button>
+                        <button class="defense-sheet-tab" type="button" id="sheetTabFact" role="tab"
+                            aria-selected="false" aria-controls="sheetPanelFact">Факт</button>
+                    </div>
+
+                    <div class="defense-sheet-body">
+                        <div class="defense-sheet-panel is-active" id="sheetPanelTowers" role="tabpanel" aria-labelledby="sheetTabTowers">
+                            <div class="tower-panel" id="towerPanel"></div>
+                        </div>
+
+                        <div class="defense-sheet-panel" id="sheetPanelFact" role="tabpanel" aria-labelledby="sheetTabFact">
+                            <div id="historicalFact" class="historical-fact hidden">
+                    <div class="wave-summary" id="waveSummary" aria-live="polite"></div>
+                    <div class="fact-title" id="factTitle"></div>
+                    <div class="fact-content">
+                        <div class="fact-text fact-collapsed" id="factContent"></div>
+                        <button class="fact-toggle" id="factToggle" type="button" aria-expanded="false">Читать далее</button>
+                    </div>
+                    <button class="menu-btn next-wave-btn" type="button" onclick="nextWave()">СЛЕДУЮЩАЯ ВОЛНА</button>
+                            </div>
+                            <div class="fact-placeholder" id="factPlaceholder" aria-live="polite">
+                                📌 Исторический факт появится после завершения волны.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gallery Mode -->
+        <div id="galleryMode" class="hidden">
+            <div class="gallery-container" id="galleryContainer"></div>
+        </div>
+    </div>
+
+    <!-- Sound Controls (collapsed by default; expands on click) -->
+    <div class="sound-controls" id="soundControls">
+        <button class="install-btn hidden" id="installBtn" type="button" aria-label="Установить приложение" title="Установить">⬇️</button>
+        <button class="help-btn" id="helpBtn" type="button" aria-label="Справка и управление">
+                <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"></circle>
+                    <path d="M9.5 9.5a2.5 2.5 0 1 1 4.5 1.5c-.6.6-1.5 1-2.2 1.5-.7.5-.8 1-.8 2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                    <circle cx="12" cy="17.5" r="1" fill="currentColor"></circle>
+                </svg>
+            </button>
+        <button class="sound-panel-toggle" id="soundPanelToggle" type="button" aria-label="Настройки звука">
+                <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <path d="M4 10v4h4l5 4V6L8 10H4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"></path>
+                    <path class="wave" d="M16.5 9.5a4 4 0 0 1 0 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+                    <path class="wave" d="M19 7a7 7 0 0 1 0 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+                    <path class="mute-slash" d="M3.5 3.5L20.5 20.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+                </svg>
+            </button>
+        <div class="sound-panel-body" id="soundPanelBody" aria-hidden="true">
+            <button class="sound-toggle" type="button" onclick="toggleSound()" id="soundBtn" aria-pressed="false">🔇 ЗВУК: ВЫКЛ</button>
+            <div class="volume-control">
+                <label for="volumeSlider">Громкость:</label>
+                <input id="volumeSlider" type="range" class="volume-slider" min="0" max="100" value="50" oninput="changeVolume(this.value)">
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
