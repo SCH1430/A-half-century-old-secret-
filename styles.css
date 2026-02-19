@@ -1,0 +1,4448 @@
+/* ============================================================
+   PROJECT 1430 — Consolidated Stylesheet
+   Sources:
+   - Former inline <style> in index.html
+   - Former injected addStyles() CSS in app.js
+   - Former injected defense fact overlay CSS in app.js
+   ============================================================ */
+
+
+/* === Base layout + design system (from index.html) === */
+
+/* Design System */
+:root {
+  --color-white: rgba(255, 255, 255, 1);
+  --color-black: rgba(0, 0, 0, 1);
+  --color-cream-50: rgba(252, 252, 249, 1);
+  --color-cream-100: rgba(255, 255, 253, 1);
+  --color-gray-200: rgba(245, 245, 245, 1);
+  --color-gray-300: rgba(167, 169, 169, 1);
+  --color-gray-400: rgba(119, 124, 124, 1);
+  --color-slate-500: rgba(98, 108, 113, 1);
+  --color-brown-600: rgba(94, 82, 64, 1);
+  --color-charcoal-700: rgba(31, 33, 33, 1);
+  --color-charcoal-800: rgba(38, 40, 40, 1);
+  --color-slate-900: rgba(19, 52, 59, 1);
+  --color-teal-300: rgba(201, 176, 122, 1);
+  --color-teal-400: rgba(224, 201, 143, 1);
+  --color-teal-500: rgba(165, 140, 90, 1);
+  --color-teal-600: rgba(150, 122, 74, 1);
+  --color-teal-700: rgba(130, 105, 65, 1);
+  --color-red-400: rgba(184, 107, 95, 1);
+  --color-red-500: rgba(140, 74, 59, 1);
+  --color-orange-400: rgba(216, 195, 165, 1);
+  --color-orange-500: rgba(170, 140, 100, 1);
+
+  --color-brown-600-rgb: 94, 82, 64;
+  --color-teal-500-rgb: 201, 176, 122;
+  --color-slate-900-rgb: 19, 52, 59;
+  --color-red-500-rgb: 140, 74, 59;
+
+  --color-background: var(--color-cream-50);
+  --color-surface: var(--color-cream-100);
+  --color-text: var(--color-slate-900);
+  --color-text-secondary: var(--color-slate-500);
+  --color-primary: var(--color-teal-500);
+  --color-primary-hover: var(--color-teal-600);
+  --color-border: rgba(var(--color-brown-600-rgb), 0.2);
+
+  --font-family-base: "Courier New", monospace;
+  --font-size-base: 14px;
+  --font-size-lg: 16px;
+  --font-size-xl: 20px;
+  --font-size-2xl: 24px;
+  --font-size-3xl: 32px;
+  --space-8: 8px;
+  --space-16: 16px;
+  --space-20: 20px;
+  --space-24: 24px;
+  --space-32: 32px;
+  --radius-base: 8px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-background: var(--color-charcoal-700);
+    --color-surface: var(--color-charcoal-800);
+    --color-text: var(--color-gray-200);
+    --color-text-secondary: rgba(167, 169, 169, 0.7);
+    --color-primary: var(--color-teal-300);
+    --color-primary-hover: var(--color-teal-400);
+    --color-border: rgba(119, 124, 124, 0.3);
+  }
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-family-base);
+  background-color: var(--color-background);
+  color: var(--color-text);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+
+/* UX polish: focus, smoothness, mode transitions */
+html{
+  scroll-behavior: smooth;
+}
+
+button, input, select, textarea{
+  font: inherit;
+}
+
+button{
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:focus-visible,
+input:focus-visible,
+.gallery-item:focus-visible{
+  outline: 3px solid rgba(var(--color-teal-500-rgb), 0.85);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(var(--color-teal-500-rgb), 0.25);
+}
+
+.menu-btn:active,
+.choice-btn:active,
+.back-btn:active,
+.return-menu-btn:active,
+.sound-panel-toggle:active,
+.sound-toggle:active,
+.lightbox-close:active,
+.lightbox-nav:active{
+  transform: translateY(1px) scale(0.99);
+}
+
+
+/* Navigation hint (keyboard toast) */
+.navigation-hint{
+  position: fixed;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%) translateY(6px);
+  background: rgba(0, 0, 0, 0.85);
+  color: var(--color-teal-300);
+  padding: 12px 22px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  z-index: 1000;
+  pointer-events: none;
+  border: 1px solid rgba(201, 176, 122, 0.45);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+  letter-spacing: 1px;
+  opacity: 0;
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.navigation-hint.is-visible{
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Toast (alerts) */
+.toast{
+  position: fixed;
+  top: 100px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-6px) scale(0.98);
+  background: rgba(var(--color-red-500-rgb), 0.92);
+  color: rgba(255,255,255,0.96);
+  padding: 10px 18px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.14);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  z-index: 1300;
+  opacity: 0;
+  animation: toastPop 2000ms ease forwards;
+}
+
+
+.toast.toast--success{
+  background: rgba(var(--color-teal-500-rgb), 0.92);
+}
+
+.toast.toast--info{
+  background: rgba(170, 140, 100, 0.92);
+}
+
+/* Toast with action button (e.g. PWA update) */
+.toast.toast--action{
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.toast .toast-action{
+  appearance: none;
+  border: 1px solid rgba(255,255,255,0.22);
+  background: rgba(0,0,0,0.20);
+  color: rgba(255,255,255,0.96);
+  border-radius: 12px;
+  padding: 8px 12px;
+  font-weight: 900;
+  cursor: pointer;
+  letter-spacing: 0.4px;
+}
+
+.toast .toast-action:active{
+  transform: translateY(1px) scale(0.99);
+}
+
+.toast .toast-action:focus-visible{
+  outline: 2px solid rgba(var(--color-teal-500-rgb), 0.70);
+  outline-offset: 2px;
+}
+
+@keyframes toastPop{
+  0%{ opacity: 0; transform: translateX(-50%) translateY(-8px) scale(0.98); }
+  12%{ opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+  84%{ opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+  100%{ opacity: 0; transform: translateX(-50%) translateY(-8px) scale(0.98); }
+}
+
+@keyframes modeEnter{
+  from{ opacity: 0; transform: translateY(8px); }
+  to{ opacity: 1; transform: translateY(0); }
+}
+
+#questMode:not(.hidden) .quest-container,
+#galleryMode:not(.hidden) .gallery-container,
+#defenseMode:not(.hidden) .defense-container{
+  animation: modeEnter 260ms ease-out;
+}
+
+/* Mode splash — быстрый визуальный переход между режимами */
+.mode-splash{
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 220ms ease;
+}
+
+.mode-splash.is-show{
+  opacity: 1;
+}
+
+.mode-splash-inner{
+  padding: 16px 20px;
+  border-radius: 18px;
+  background: rgba(12, 14, 24, 0.55);
+  border: 1px solid rgba(201, 176, 122, 0.30);
+  box-shadow: 0 18px 60px rgba(0,0,0,0.45);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  transform: translateY(8px) scale(0.98);
+  opacity: 0;
+  transition: transform 220ms ease, opacity 220ms ease;
+}
+
+.mode-splash.is-show .mode-splash-inner{
+  transform: translateY(0) scale(1);
+  opacity: 1;
+}
+
+.mode-splash-title{
+  font-size: 14px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  text-align: center;
+}
+
+.mode-splash-sub{
+  margin-top: 6px;
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: rgba(255,255,255,0.82);
+  text-align: center;
+}
+
+/* Loading Screen */
+#loadingScreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  transition: opacity 0.5s ease-out;
+  cursor: pointer;
+}
+
+#loadingScreen.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.project-logo {
+  width: 120px;
+  height: 120px;
+  margin-bottom: var(--space-32);
+  position: relative;
+}
+
+.radar-icon {
+  width: 100%;
+  height: 100%;
+  border: 3px solid var(--color-teal-300);
+  border-radius: 50%;
+  position: relative;
+  animation: radarPulse 2s infinite;
+}
+
+.radar-icon::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 2px;
+  height: 50%;
+  background: var(--color-teal-300);
+  transform-origin: top center;
+  transform: translate(-50%, 0) rotate(0deg);
+  animation: radarSweep 2s linear infinite;
+}
+
+@keyframes radarPulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(201, 176, 122, 0.5); }
+  50% { box-shadow: 0 0 40px rgba(201, 176, 122, 0.8); }
+}
+
+@keyframes radarSweep {
+  0% { transform: translate(-50%, 0) rotate(0deg); }
+  100% { transform: translate(-50%, 0) rotate(360deg); }
+}
+
+.title-typewriter {
+  font-size: var(--font-size-3xl);
+  font-weight: bold;
+  color: var(--color-teal-300);
+  letter-spacing: 4px;
+  margin-bottom: var(--space-16);
+  min-height: 50px;
+}
+
+.subtitle-loading {
+  font-size: var(--font-size-lg);
+  color: var(--color-gray-300);
+  margin-bottom: var(--space-32);
+  opacity: 0;
+  animation: fadeIn 1s ease-in 2s forwards;
+}
+
+@keyframes fadeIn {
+  to { opacity: 1; }
+}
+
+.loading-dots::after {
+  content: '';
+  animation: loadingDots 1.5s infinite;
+}
+
+@keyframes loadingDots {
+  0%, 20% { content: '.'; }
+  40% { content: '..'; }
+  60%, 100% { content: '...'; }
+}
+
+
+/* Skip hint (for defense/demo): click or press Enter to skip intro */
+.skip-hint{
+  margin-top: 14px;
+  font-size: 12px;
+  color: rgba(255,255,255,0.75);
+  letter-spacing: 0.6px;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 220ms ease, transform 220ms ease;
+  user-select: none;
+}
+
+.skip-hint.is-visible{
+  opacity: 1;
+  transform: translateY(0);
+}
+
+#loadingScreen.is-skipped .subtitle-loading,
+#loadingScreen.is-skipped .menu-buttons{
+  opacity: 1 !important;
+  animation: none !important;
+}
+
+#loadingScreen.is-skipped .skip-hint{
+  opacity: 0 !important;
+}
+
+/* Menu Buttons */
+.menu-buttons {
+  display: flex;
+  gap: var(--space-24);
+  flex-wrap: wrap;
+  justify-content: center;
+  opacity: 0;
+  animation: fadeIn 1s ease-in 3.5s forwards;
+}
+
+.menu-btn {
+  padding: var(--space-16) var(--space-32);
+  font-size: var(--font-size-lg);
+  font-family: var(--font-family-base);
+  background: transparent;
+  border: 2px solid var(--color-teal-300);
+  color: var(--color-teal-300);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.menu-btn:hover {
+  background: var(--color-teal-300);
+  color: var(--color-charcoal-700);
+  box-shadow: 0 0 20px rgba(201, 176, 122, 0.5);
+}
+
+/* Menu group (quest continue/restart) */
+.menu-group{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
+
+.menu-note{
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.78);
+  letter-spacing: 0.6px;
+  margin-top: -4px;
+  max-width: 360px;
+  text-align: center;
+  user-select: none;
+}
+
+.menu-btn-secondary{
+  font-size: 12px;
+  padding: 10px 22px;
+  border-style: dashed;
+  opacity: 0.92;
+}
+
+.menu-btn-secondary:hover{
+  background: rgba(201, 176, 122, 0.9);
+  color: var(--color-charcoal-700);
+}
+
+.menu-footer{
+  margin-top: 26px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.68);
+  letter-spacing: 0.6px;
+  text-align: center;
+  user-select: none;
+}
+
+.menu-consultant{
+  display: block;
+  margin-top: 6px;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.56);
+  letter-spacing: 0.4px;
+  line-height: 1.35;
+}
+
+
+/* Main App */
+#app {
+  display: none;
+  min-height: 100vh;
+  padding: var(--space-24);
+}
+
+#app.active {
+  display: block;
+}
+
+/* Quest Mode */
+.quest-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: var(--space-32);
+}
+
+.chapter {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-base);
+  padding: var(--space-32);
+  margin-bottom: var(--space-24);
+}
+
+.chapter-title {
+  font-size: var(--font-size-2xl);
+  color: var(--color-primary);
+  margin-bottom: var(--space-8);
+  letter-spacing: 2px;
+}
+
+.chapter-subtitle {
+  font-size: var(--font-size-lg);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-24);
+}
+
+.chapter-content {
+  font-size: var(--font-size-base);
+  line-height: 1.8;
+  margin-bottom: var(--space-24);
+}
+
+.dialog-line {
+  margin-bottom: var(--space-16);
+  padding: var(--space-12);
+  background: rgba(var(--color-teal-500-rgb), 0.05);
+  border-left: 3px solid var(--color-primary);
+  border-radius: var(--radius-base);
+}
+
+.speaker {
+  font-weight: bold;
+  font-size: var(--font-size-base);
+  margin-bottom: var(--space-8);
+  letter-spacing: 1px;
+}
+
+.speaker-archive {
+  color: var(--color-primary);
+}
+
+.speaker-student {
+  color: var(--color-orange-500);
+}
+
+.dialog-text {
+  font-size: var(--font-size-base);
+  line-height: 1.6;
+  color: var(--color-text);
+}
+
+.chapter-photo {
+  width: 100%;
+  max-width: 600px;
+  height: auto;
+  margin: var(--space-24) 0;
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-base);
+  display: block;
+}
+
+.photo-caption {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+  font-style: italic;
+  margin-top: var(--space-8);
+  text-align: center;
+}
+
+.final-screen {
+  background: var(--color-surface);
+  border: 2px solid var(--color-primary);
+  border-radius: var(--radius-base);
+  padding: var(--space-32);
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.final-title {
+  font-size: var(--font-size-3xl);
+  color: var(--color-primary);
+  margin-bottom: var(--space-24);
+  letter-spacing: 3px;
+}
+
+.final-content {
+  font-size: var(--font-size-lg);
+  line-height: 1.8;
+  margin-bottom: var(--space-32);
+}
+
+.final-accent{
+  color: var(--color-primary);
+}
+
+.return-menu-btn {
+  padding: var(--space-16) var(--space-32);
+  font-size: var(--font-size-xl);
+  font-family: var(--font-family-base);
+  background: var(--color-red-500);
+  border: 3px solid var(--color-red-500);
+  color: var(--color-white);
+  cursor: pointer;
+  border-radius: var(--radius-base);
+  transition: all 0.3s ease;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-weight: bold;
+  box-shadow: 0 0 20px rgba(192, 21, 47, 0.5);
+}
+
+.return-menu-btn:hover {
+  background: var(--color-white);
+  color: var(--color-red-500);
+  box-shadow: 0 0 30px rgba(192, 21, 47, 0.8);
+  transform: scale(1.05);
+}
+
+.choice-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+  margin-top: var(--space-24);
+}
+
+.choice-btn {
+  padding: var(--space-16);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-base);
+  background: var(--color-surface);
+  border: 2px solid var(--color-primary);
+  color: var(--color-text);
+  cursor: pointer;
+  border-radius: var(--radius-base);
+  transition: all 0.3s ease;
+  text-align: left;
+}
+
+.choice-btn:hover {
+  background: var(--color-primary);
+  color: var(--color-white);
+  transform: translateX(10px);
+}
+
+.back-btn {
+  position: fixed;
+  top: calc(var(--space-24) + var(--safe-top));
+  left: calc(var(--space-24) + var(--safe-left));
+  padding: var(--space-16) var(--space-24);
+  font-family: var(--font-family-base);
+  background: var(--color-primary);
+  border: none;
+  color: var(--color-white);
+  cursor: pointer;
+  border-radius: var(--radius-base);
+  transition: all 0.3s ease;
+  z-index: 100;
+}
+
+.back-btn:hover {
+  background: var(--color-primary-hover);
+}
+
+/* Gallery styles */
+.gallery-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--space-24);
+  padding: var(--space-24);
+}
+
+.gallery-item img {
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-base);
+  border: 2px solid var(--color-primary);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+}
+
+.gallery-caption {
+  text-align: center;
+  font-size: var(--font-size-base);
+  margin-top: var(--space-8);
+  color: var(--color-text-secondary);
+}
+
+
+/* Make gallery tiles keyboard-accessible (button reset) */
+.gallery-item{
+  background: transparent;
+  border: none;
+  padding: 0;
+  text-align: inherit;
+  cursor: zoom-in;
+  border-radius: var(--radius-base);
+  transition: transform 220ms ease;
+}
+
+.gallery-item:hover{
+  transform: translateY(-2px);
+}
+
+.gallery-item:active{
+  transform: translateY(0);
+}
+
+/* Lightbox */
+body.no-scroll{
+  overflow: hidden;
+}
+
+.lightbox-overlay{
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  display: grid;
+  place-items: center;
+  padding: clamp(16px, 2vw, 24px);
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(10px) saturate(140%);
+  -webkit-backdrop-filter: blur(10px) saturate(140%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 180ms ease;
+}
+
+.lightbox-overlay.is-open{
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.lightbox-backdrop{
+  position: absolute;
+  inset: 0;
+}
+
+.lightbox-dialog{
+  position: relative;
+  width: min(980px, 96vw);
+  max-height: 90vh;
+  background: rgba(12, 14, 24, 0.85);
+  border: 1px solid rgba(201, 176, 122, 0.35);
+  border-radius: 16px;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
+  padding: 14px;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  gap: 10px;
+}
+
+.lightbox-image{
+  width: 100%;
+  height: auto;
+  max-height: 72vh;
+  object-fit: contain;
+  border-radius: 12px;
+  border: 1px solid rgba(201, 176, 122, 0.25);
+  background: rgba(0, 0, 0, 0.15);
+}
+
+.lightbox-caption{
+  text-align: center;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 13px;
+  letter-spacing: 0.5px;
+  padding-bottom: 4px;
+}
+
+.lightbox-close{
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  border: 1px solid rgba(201, 176, 122, 0.35);
+  background: rgba(12, 14, 24, 0.45);
+  color: rgba(255,255,255,0.95);
+  cursor: pointer;
+}
+
+.lightbox-nav{
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  border: 1px solid rgba(201, 176, 122, 0.35);
+  background: rgba(12, 14, 24, 0.45);
+  color: rgba(255,255,255,0.95);
+  cursor: pointer;
+}
+
+.lightbox-prev{ left: 10px; }
+.lightbox-next{ right: 10px; }
+
+@media (max-width: 560px){
+  .lightbox-nav{ display: none; }
+}
+
+/* Help / Controls overlay */
+.help-overlay{
+  position: fixed;
+  inset: 0;
+  z-index: 1250;
+  display: grid;
+  place-items: center;
+  padding: clamp(16px, 2vw, 24px);
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(10px) saturate(140%);
+  -webkit-backdrop-filter: blur(10px) saturate(140%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 180ms ease;
+}
+
+.help-overlay.is-open{
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.help-backdrop{
+  position: absolute;
+  inset: 0;
+}
+
+.help-dialog{
+  position: relative;
+  width: min(760px, 94vw);
+  max-height: min(86vh, 720px);
+  overflow: auto;
+  background: rgba(12, 14, 24, 0.86);
+  border: 1px solid rgba(201, 176, 122, 0.35);
+  border-radius: 18px;
+  box-shadow: 0 24px 70px rgba(0,0,0,0.55);
+  padding: 18px;
+  color: rgba(255,255,255,0.96);
+}
+
+.help-header{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.help-title{
+  font-size: 18px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+
+.help-subtitle{
+  font-size: 12px;
+  opacity: 0.82;
+  letter-spacing: 0.8px;
+}
+
+.help-close{
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  border: 1px solid rgba(201, 176, 122, 0.35);
+  background: rgba(12, 14, 24, 0.45);
+  color: rgba(255,255,255,0.95);
+  cursor: pointer;
+}
+
+.help-grid{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.help-card{
+  border: 1px solid rgba(201, 176, 122, 0.22);
+  background: rgba(0,0,0,0.18);
+  border-radius: 16px;
+  padding: 12px;
+}
+
+.help-card h3{
+  font-size: 13px;
+  color: rgba(255,255,255,0.92);
+  letter-spacing: 1.3px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.help-card ul{
+  margin-left: 18px;
+  display: grid;
+  gap: 6px;
+  font-size: 13px;
+  color: rgba(255,255,255,0.86);
+}
+
+.help-actions{
+  margin-top: 12px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.help-action{
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(201, 176, 122, 0.35);
+  background: rgba(12, 14, 24, 0.35);
+  color: rgba(255,255,255,0.95);
+  cursor: pointer;
+  letter-spacing: 0.6px;
+}
+
+.help-action[disabled]{
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+kbd{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  border: 1px solid rgba(201, 176, 122, 0.28);
+  background: rgba(0,0,0,0.28);
+  color: rgba(255,255,255,0.95);
+  font-weight: 800;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+@media (max-width: 720px){
+  .help-grid{ grid-template-columns: 1fr; }
+}
+
+/* Defense tutorial overlay */
+.tutorial-overlay{
+  position: fixed;
+  inset: 0;
+  z-index: 1245;
+  display: grid;
+  place-items: center;
+  padding: clamp(16px, 2vw, 24px);
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(10px) saturate(140%);
+  -webkit-backdrop-filter: blur(10px) saturate(140%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 180ms ease;
+}
+
+.tutorial-overlay.is-open{
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.tutorial-backdrop{ position: absolute; inset: 0; }
+
+.tutorial-card{
+  position: relative;
+  width: min(680px, 94vw);
+  background: rgba(12, 14, 24, 0.88);
+  border: 1px solid rgba(201, 176, 122, 0.35);
+  border-radius: 18px;
+  box-shadow: 0 24px 70px rgba(0,0,0,0.55);
+  padding: 18px;
+  color: rgba(255,255,255,0.96);
+}
+
+/* Game over card (Defense) */
+.gameover-card{
+  width: min(760px, 95vw);
+}
+
+.gameover-grid{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.gameover-stat{
+  border: 1px solid rgba(201, 176, 122, 0.25);
+  background: rgba(0,0,0,0.22);
+  border-radius: 14px;
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.gameover-stat span{
+  font-size: 12px;
+  opacity: 0.86;
+  letter-spacing: 0.4px;
+}
+
+.gameover-stat b{
+  font-size: 14px;
+  color: rgba(255,255,255,0.96);
+}
+
+.gameover-record{
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(76, 175, 80, 0.35);
+  background: rgba(76, 175, 80, 0.10);
+  color: rgba(234, 255, 238, 0.94);
+  font-size: 13px;
+}
+
+.gameover-record.is-hidden{ display: none; }
+
+@media (max-width: 560px){
+  .gameover-grid{ grid-template-columns: 1fr; }
+}
+
+.tutorial-header{
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.tutorial-title{
+  font-size: 18px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+
+.tutorial-subtitle{
+  font-size: 12px;
+  opacity: 0.82;
+  letter-spacing: 0.8px;
+  margin-top: 2px;
+}
+
+.tutorial-close{
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  border: 1px solid rgba(201, 176, 122, 0.35);
+  background: rgba(12, 14, 24, 0.45);
+  color: rgba(255,255,255,0.95);
+  cursor: pointer;
+}
+
+.tutorial-steps{
+  margin-left: 20px;
+  display: grid;
+  gap: 8px;
+  font-size: 13px;
+  color: rgba(255,255,255,0.88);
+}
+
+.tutorial-actions{
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 14px;
+}
+
+.tutorial-ok{
+  letter-spacing: 1.2px;
+}
+
+.tutorial-highlight{
+  outline: 2px solid rgba(201, 176, 122, 0.55);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(201, 176, 122, 0.20), 0 0 30px rgba(201, 176, 122, 0.18);
+  border-radius: 14px;
+  animation: tutorialPulse 1400ms ease-in-out infinite;
+}
+
+@keyframes tutorialPulse{
+  0%, 100%{ box-shadow: 0 0 0 4px rgba(201, 176, 122, 0.20), 0 0 24px rgba(201, 176, 122, 0.16); }
+  50%{ box-shadow: 0 0 0 6px rgba(201, 176, 122, 0.26), 0 0 34px rgba(201, 176, 122, 0.22); }
+}
+
+@media (max-width: 560px){
+  .tutorial-card{ padding: 14px; }
+}
+
+/* Tower Defense */
+.defense-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--space-24);
+}
+
+.game-header {
+  /* Заменяем светлый фон шапки на тёмный, чтобы он гармонировал с общим стилем */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-24);
+  padding: var(--space-16);
+  background: rgba(26, 26, 46, 0.8);
+  border: 2px solid rgba(201, 176, 122, 0.3);
+  border-radius: var(--radius-base);
+}
+
+.mode-title{
+  color: var(--color-primary);
+  letter-spacing: 2px;
+}
+
+.stats {
+  display: flex;
+  gap: var(--space-24);
+}
+
+/* Defense controls (pause / speed) */
+.defense-controls{
+  display: flex;
+  gap: var(--space-8);
+  align-items: center;
+}
+
+.defense-btn{
+  width: 68px;
+  height: 40px;
+  padding: 0 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(201, 176, 122, 0.35);
+  background: rgba(10, 10, 26, 0.55);
+  color: rgba(255,255,255,0.94);
+  font-weight: 900;
+  cursor: pointer;
+  transition: transform 120ms ease, background 120ms ease, border-color 120ms ease;
+}
+
+.defense-btn:hover{
+  border-color: rgba(201, 176, 122, 0.65);
+  transform: translateY(-1px);
+}
+
+.defense-btn:active{
+  transform: translateY(1px) scale(0.98);
+}
+
+.defense-btn[aria-pressed="true"]{
+  background: rgba(var(--color-teal-500-rgb), 0.18);
+  border-color: rgba(var(--color-teal-500-rgb), 0.55);
+}
+
+/* Responsive header */
+@media (max-width: 720px){
+  .game-header{
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+  }
+  .stats{
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+
+.stat-item {
+  font-size: var(--font-size-lg);
+}
+
+.stat-label {
+  color: var(--color-text-secondary);
+  margin-right: var(--space-8);
+}
+
+.stat-value {
+  color: var(--color-primary);
+  font-weight: bold;
+}
+
+.game-canvas {
+  background: var(--color-surface);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-base);
+  display: block;
+  margin: 0 auto var(--space-24);
+}
+
+.tower-panel {
+  display: flex;
+  gap: var(--space-16);
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: var(--space-24);
+}
+
+/* Tower actions (upgrade / sell) */
+.tower-actions{
+  max-width: 980px;
+  margin: 0 auto var(--space-16);
+  padding: var(--space-16);
+  background: rgba(26, 26, 46, 0.82);
+  border: 1px solid rgba(201, 176, 122, 0.32);
+  border-radius: var(--radius-base);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.35);
+}
+
+.tower-actions.hidden{
+  display: none;
+}
+
+.tower-actions-header{
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.tower-actions-title{
+  font-weight: 900;
+  letter-spacing: 0.8px;
+  color: var(--color-primary);
+  font-size: 1.05rem;
+}
+
+.tower-actions-sub{
+  margin-top: 4px;
+  color: var(--color-text-secondary);
+  font-size: 0.95rem;
+}
+
+.tower-actions-close{
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(0,0,0,0.22);
+  color: rgba(255,255,255,0.9);
+  cursor: pointer;
+  font-weight: 900;
+}
+
+.tower-actions-close:hover{
+  border-color: rgba(201, 176, 122, 0.55);
+}
+
+.tower-actions-grid{
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.tower-actions-chip{
+  padding: 8px 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.10);
+  background: rgba(0,0,0,0.18);
+  text-align: center;
+}
+
+.tower-actions-chip .label{
+  display: block;
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+}
+
+.tower-actions-chip .value{
+  display: block;
+  font-weight: 900;
+  color: rgba(255,255,255,0.95);
+  margin-top: 2px;
+}
+
+.tower-actions-buttons{
+  margin-top: 12px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* Targeting controls (Stage-14) */
+.tower-actions-target{
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.10);
+  background: rgba(0,0,0,0.16);
+}
+
+.tower-actions-target-label{
+  font-weight: 900;
+  color: rgba(255,255,255,0.92);
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.segmented{
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.segmented-btn{
+  padding: 8px 10px;
+  border-radius: 14px;
+  border: 1px solid rgba(201, 176, 122, 0.25);
+  background: rgba(10, 10, 26, 0.50);
+  color: rgba(255,255,255,0.92);
+  font-weight: 900;
+  cursor: pointer;
+  transition: transform 120ms ease, border-color 120ms ease, background 120ms ease;
+}
+
+.segmented-btn:hover{
+  border-color: rgba(201, 176, 122, 0.65);
+  transform: translateY(-1px);
+}
+
+.segmented-btn:active{
+  transform: translateY(1px) scale(0.99);
+}
+
+.segmented-btn.is-active{
+  border-color: rgba(71, 215, 255, 0.65);
+  background: rgba(71, 215, 255, 0.18);
+}
+
+.tower-actions-note{
+  margin-top: 8px;
+  text-align: center;
+  color: var(--color-text-secondary);
+  font-size: 0.92rem;
+}
+
+/* On narrow screens buttons should be easy to tap */
+@media (max-width: 520px){
+  .segmented-btn{ min-width: 130px; }
+}
+
+.tower-actions-btn{
+  min-width: 170px;
+  padding: 10px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(201, 176, 122, 0.32);
+  background: rgba(10, 10, 26, 0.60);
+  color: rgba(255,255,255,0.94);
+  font-weight: 900;
+  cursor: pointer;
+  transition: transform 120ms ease, border-color 120ms ease, background 120ms ease;
+}
+
+.tower-actions-btn:hover{
+  border-color: rgba(201, 176, 122, 0.65);
+  transform: translateY(-1px);
+}
+
+.tower-actions-btn:active{
+  transform: translateY(1px) scale(0.99);
+}
+
+.tower-actions-btn[disabled]{
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.tower-actions-btn--danger{
+  border-color: rgba(var(--color-red-500-rgb), 0.55);
+  background: rgba(var(--color-red-500-rgb), 0.18);
+}
+
+.tower-actions-btn--danger:hover{
+  border-color: rgba(var(--color-red-500-rgb), 0.85);
+}
+
+@media (max-width: 720px){
+  .tower-actions-grid{ grid-template-columns: repeat(2, minmax(0,1fr)); }
+  .tower-actions-btn{ min-width: 150px; }
+}
+
+.tower-card {
+  background: var(--color-surface);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-base);
+  padding: var(--space-16);
+  width: 200px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.tower-card:hover {
+  border-color: var(--color-primary);
+  transform: translateY(-5px);
+}
+
+.tower-card.selected {
+  border-color: var(--color-primary);
+  background: rgba(var(--color-teal-500-rgb), 0.1);
+}
+
+.tower-name {
+  font-size: var(--font-size-lg);
+  color: var(--color-primary);
+  margin-bottom: var(--space-8);
+}
+
+.tower-stats {
+  font-size: var(--font-size-base);
+  margin-bottom: var(--space-8);
+}
+
+.tower-cost {
+  font-weight: bold;
+  color: var(--color-orange-500);
+}
+
+.historical-fact {
+  background: var(--color-surface);
+  border: 2px solid var(--color-primary);
+  border-radius: var(--radius-base);
+  padding: var(--space-24);
+  margin: var(--space-24) 0;
+  text-align: center;
+}
+
+/* Wave summary inside Fact panel (shows after each wave) */
+.wave-summary{
+  margin-bottom: var(--space-16);
+  padding: 12px 14px;
+  border-radius: 16px;
+  border: 1px solid rgba(201, 176, 122, 0.35);
+  background: rgba(0,0,0,0.25);
+  color: rgba(255,255,255,0.92);
+  text-align: left;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.wave-summary strong{ color: var(--color-primary); }
+.wave-summary:empty{ display: none; }
+
+.fact-title {
+  font-size: var(--font-size-2xl);
+  color: var(--color-primary);
+  margin-bottom: var(--space-16);
+}
+
+.fact-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Fact text: smart density (collapsed by default with “read more”) */
+:root {
+  --fact-lines: 3;
+}
+@media (min-width: 600px) {
+  :root { --fact-lines: 4; }
+}
+@media (min-width: 1024px) {
+  :root { --fact-lines: 5; }
+}
+
+.fact-text {
+  width: 100%;
+  font-size: var(--font-size-lg);
+  line-height: 1.8;
+  position: relative;
+}
+
+.fact-text.fact-collapsed {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: var(--fact-lines);
+  max-height: calc(var(--fact-lines) * 1.8em);
+}
+
+.fact-text.fact-collapsed::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2.6em;
+  background: linear-gradient(to bottom, rgba(0,0,0,0), rgba(0,0,0,0.65));
+  pointer-events: none;
+}
+
+@media (prefers-color-scheme: light) {
+  .fact-text.fact-collapsed::after {
+    background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,253,0.95));
+  }
+}
+
+.fact-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 12px;
+  font-size: 12px;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  border-radius: 999px;
+  cursor: pointer;
+  border: 1px solid rgba(201, 176, 122, 0.35);
+  background: rgba(12, 14, 24, 0.25);
+  color: var(--color-primary);
+  backdrop-filter: blur(12px) saturate(140%);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  transition: transform 160ms ease, background 160ms ease, border-color 160ms ease;
+}
+
+.fact-toggle:hover {
+  background: rgba(12, 14, 24, 0.32);
+  border-color: rgba(201, 176, 122, 0.55);
+}
+
+.fact-toggle:active {
+  transform: scale(0.98);
+}
+
+.next-wave-btn {
+  margin-top: 12px;
+}
+
+/* Sound Settings (compact + раскрывается по нажатию) */
+.sound-controls {
+  position: fixed;
+  top: calc(var(--space-16) + var(--safe-top));
+  right: calc(var(--space-16) + var(--safe-right));
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+  padding: 8px;
+  border-radius: 14px;
+  background: rgba(12, 14, 24, 0.35);
+  border: 1px solid rgba(201, 176, 122, 0.25);
+  backdrop-filter: blur(14px) saturate(130%);
+  -webkit-backdrop-filter: blur(14px) saturate(130%);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+}
+
+/* Icon buttons inside sound-controls should be perfectly centered and одинаковыми по размеру */
+.sound-controls > button{
+  display: grid;
+  place-items: center;
+  padding: 0;
+  line-height: 0;
+}
+
+.sound-controls > button .ui-icon{
+  width: 22px;
+  height: 22px;
+  display: block;
+}
+
+.sound-panel-toggle {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  border: 1px solid rgba(201, 176, 122, 0.35);
+  background: rgba(12, 14, 24, 0.35);
+  color: var(--color-white);
+  cursor: pointer;
+  transition: transform 160ms ease, background 160ms ease, border-color 160ms ease;
+  font-size: 16px;
+  display: grid;
+  place-items: center;
+}
+
+
+.install-btn{
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  border: 1px solid rgba(201, 176, 122, 0.35);
+  background: rgba(12, 14, 24, 0.35);
+  color: var(--color-white);
+  cursor: pointer;
+  font-size: 16px;
+  display: grid;
+  place-items: center;
+  transition: transform 160ms ease, background 160ms ease, border-color 160ms ease, opacity 160ms ease;
+}
+
+.install-btn:hover{
+  background: rgba(12, 14, 24, 0.45);
+  border-color: rgba(201, 176, 122, 0.55);
+}
+
+.install-btn:active{
+  transform: translateY(1px) scale(0.99);
+}
+
+.help-btn{
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  border: 1px solid rgba(201, 176, 122, 0.35);
+  background: rgba(12, 14, 24, 0.35);
+  color: var(--color-white);
+  cursor: pointer;
+  font-size: 16px;
+  display: grid;
+  place-items: center;
+  transition: transform 160ms ease, background 160ms ease, border-color 160ms ease;
+}
+
+.help-btn:hover{
+  background: rgba(12, 14, 24, 0.45);
+  border-color: rgba(201, 176, 122, 0.55);
+}
+
+.help-btn:active{
+  transform: translateY(1px) scale(0.99);
+}
+
+.sound-panel-toggle:hover{
+  background: rgba(12, 14, 24, 0.45);
+  border-color: rgba(201, 176, 122, 0.55);
+}
+
+.sound-panel-body {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-4px);
+  transition: max-height 220ms ease, opacity 220ms ease, transform 220ms ease;
+}
+
+.sound-controls.is-open .sound-panel-body {
+  max-height: 140px;
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.sound-toggle {
+  padding: 8px 10px;
+  font-family: var(--font-family-base);
+  background: rgba(12, 14, 24, 0.35);
+  border: 1px solid rgba(201, 176, 122, 0.35);
+  color: var(--color-white);
+  cursor: pointer;
+  border-radius: 12px;
+  letter-spacing: 0.3px;
+}
+
+.volume-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-top: 6px;
+}
+
+.volume-control label {
+  font-size: 11px;
+  opacity: 0.82;
+}
+
+.volume-slider {
+  width: 120px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .menu-buttons {
+    flex-direction: column;
+  }
+  
+  .game-header {
+    flex-direction: column;
+    gap: var(--space-16);
+  }
+  
+  .tower-panel {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+.hidden {
+  display: none !important;
+}
+/* =========================================================
+   Overrides: QUEST controls — transparent museum glass
+   - Menu button transparent + blur
+   - Bottom navigation compact (icon glass), does not take layout space
+   - Reduce bottom padding / avoid "heavy bottom area"
+   ========================================================= */
+
+.quest-container{
+  padding: clamp(16px, 2vw, var(--space-32)) !important;
+  padding-bottom: clamp(12px, 1.6vw, var(--space-20)) !important;
+}
+
+.final-screen{
+  padding: clamp(18px, 2vw, var(--space-32)) !important;
+}
+
+.final-content{
+  margin-bottom: clamp(16px, 2vw, var(--space-24)) !important;
+}
+
+/* Top-left menu button: transparent glass */
+.back-btn{
+  padding: 10px 14px !important;
+  font-size: 0.95rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 1px !important;
+  background: rgba(12, 14, 24, 0.14) !important;
+  border: 1px solid rgba(201, 176, 122, 0.55) !important;
+  color: rgba(255, 255, 255, 0.92) !important;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35) !important;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+}
+
+.back-btn:hover{
+  background: rgba(201, 176, 122, 0.14) !important;
+  border-color: rgba(201, 176, 122, 0.8) !important;
+}
+
+/* Quest scene navigation (under the scene, NOT as a floating overlay)
+   - Horizontal layout (◀ / ▶)
+   - Stays inside #questContainer flow, so it never overlaps photos/text */
+#navButtons.nav-floating{
+  position: static;
+  left: auto;
+  bottom: auto;
+  transform: none;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+
+  width: max-content;
+  margin: 14px auto 0;
+  padding: 10px 12px;
+
+  background: rgba(12, 14, 24, 0.08);
+  border: 1px solid rgba(201, 176, 122, 0.35);
+  border-radius: 14px;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+/* Glass icon buttons */
+.nav-icon-btn{
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  border: 1px solid rgba(201, 176, 122, 0.45);
+  background: rgba(12, 14, 24, 0.14);
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 1.05rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform .15s ease, background .15s ease, border-color .15s ease;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.nav-icon-btn:hover{
+  background: rgba(201, 176, 122, 0.12);
+  border-color: rgba(201, 176, 122, 0.8);
+}
+
+.nav-icon-btn:disabled{
+  opacity: .35;
+  cursor: default;
+}
+
+/* Even smaller on narrow screens */
+@media (max-width: 480px){
+  .nav-icon-btn{ width: 40px; height: 40px; border-radius: 11px; font-size: 1rem; }
+  #navButtons.nav-floating{ gap: 7px; padding: 5px 6px; }
+}
+
+/* Tooltips only on desktop */
+@media (hover: hover) and (pointer: fine){
+  .nav-icon-btn[data-tip]{
+    position: relative;
+  }
+  .nav-icon-btn[data-tip]::after{
+    content: attr(data-tip);
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: calc(100% + 10px);
+    white-space: nowrap;
+    padding: 6px 10px;
+    font-size: 0.85rem;
+    border-radius: 10px;
+    background: rgba(12, 14, 24, 0.55);
+    border: 1px solid rgba(201, 176, 122, 0.45);
+    color: rgba(255, 255, 255, 0.95);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .12s ease;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+  .nav-icon-btn[data-tip]:hover::after,
+  .nav-icon-btn[data-tip]:focus-visible::after{
+    opacity: 1;
+  }
+}
+
+/* On touch devices: disable tooltip bubble */
+@media (hover: none){
+  .nav-icon-btn[data-tip]::after{ display: none !important; }
+}
+
+
+/* === Theme + component overrides (from app.js addStyles) === */
+
+/*
+         * Архивная палитра (акцентные цвета)
+         * Задача: уйти от "кислотного" неона к музейно‑архивному ощущению.
+         */
+        :root {
+            --arch-gold: #C9B07A;      /* основной акцент: латунь/переплёт */
+            --arch-gold-2: #E0C98F;    /* подсветка/hover */
+            --arch-seal: #8C4A3B;      /* архивная печать */
+            --arch-seal-2: #B86B5F;    /* печать/hover */
+            --arch-paper: #D8C3A5;     /* тёплый акцент/бумага */
+            --arch-border: rgba(201, 176, 122, 0.30);
+            --arch-border-soft: rgba(201, 176, 122, 0.18);
+            --arch-glow: rgba(201, 176, 122, 0.35);
+        }
+
+        /* Основные улучшения для читаемости */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            letter-spacing: 0.3px;
+            margin: 0 !important;
+            padding: 0;
+            background: #0a0a1a;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        /* Улучшенное меню */
+        #loadingScreen {
+            background: linear-gradient(135deg, #0a0a1a 0%, #1a1a2e 50%, #16213e 100%);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            z-index: 1000;
+        }
+
+        #loadingScreen::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(circle at 20% 80%, rgba(201, 176, 122, 0.12) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(140, 74, 59, 0.10) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(216, 195, 165, 0.06) 0%, transparent 50%);
+            animation: pulse 8s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.3; }
+            100% { opacity: 0.7; }
+        }
+
+        .menu-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            padding: 20px;
+            max-width: 800px;
+        }
+
+        #titleTypewriter {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--arch-gold), var(--arch-gold-2), var(--arch-seal));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 2px 20px var(--arch-glow);
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        #subtitle {
+            font-size: 1.5rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 3rem;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.8s ease;
+            font-weight: 300;
+            letter-spacing: 2px;
+        }
+
+        .menu-options {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            align-items: center;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease 0.5s;
+        }
+
+        .menu-btn {
+            padding: 18px 40px;
+            font-size: 1.3rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, rgba(26, 26, 46, 0.8), rgba(42, 42, 74, 0.8));
+            border: 2px solid;
+            border-image: linear-gradient(135deg, var(--arch-gold), var(--arch-seal)) 1;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 300px;
+            text-align: center;
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+            letter-spacing: 1px;
+        }
+
+        .menu-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: 0.5s;
+        }
+
+        .menu-btn:hover::before {
+            left: 100%;
+        }
+
+        .menu-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(135deg, rgba(42, 42, 74, 0.9), rgba(58, 58, 106, 0.9));
+        }
+
+        .menu-btn:nth-child(1) {
+            border-image: linear-gradient(135deg, #C9B07A, #E0C98F) 1;
+        }
+
+        .menu-btn:nth-child(2) {
+            border-image: linear-gradient(135deg, #8C4A3B, #B86B5F) 1;
+        }
+
+        /* Стилизуем третью кнопку меню (галерею) отдельным градиентом */
+        .menu-btn:nth-child(3) {
+            border-image: linear-gradient(135deg, #E0C98F, #C9B07A) 1;
+    /* Показываем текст галереи белым, иначе он может сливаться с фоном */
+    color: white;
+        }
+
+        .menu-btn span {
+            display: inline-block;
+            margin-right: 10px;
+            font-size: 1.4rem;
+        }
+
+        .menu-decor {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.05);
+            font-size: 4rem;
+            z-index: 1;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s ease;
+        }
+
+        .menu-decor:nth-child(1) { top: 10%; left: 5%; }
+        .menu-decor:nth-child(2) { top: 15%; right: 10%; }
+        .menu-decor:nth-child(3) { bottom: 20%; left: 15%; }
+        .menu-decor:nth-child(4) { bottom: 15%; right: 5%; }
+
+        /* Общие классы */
+        .hidden {
+            display: none !important;
+        }
+
+        #app {
+            min-height: 100vh;
+        }
+
+        #app.active {
+            padding: 20px;
+        }
+
+        /* Режим квеста */
+        #questMode {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .chapter {
+            background: rgba(26, 26, 46, 0.8);
+            border-radius: 15px;
+            padding: 30px;
+            /* Уменьшаем отступы между сценами, чтобы минимизировать прокрутку */
+            margin-bottom: 40px;
+            border: 2px solid rgba(201, 176, 122, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .chapter-header {
+            margin-bottom: 2rem;
+        }
+
+        .chapter-number {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 0.5rem;
+            letter-spacing: 1px;
+        }
+
+        .chapter-title {
+            font-size: 2rem;
+            line-height: 1.3;
+            margin-bottom: 1.5rem;
+            color: #C9B07A;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .chapter-progress {
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #C9B07A, #E0C98F);
+            transition: width 0.5s ease;
+        }
+
+        .photo-container {
+            position: relative;
+            margin: 2rem 0;
+            /* Убираем обрезание изображения, так как его форму задаём непосредственно на картинке */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .chapter-photo {
+            width: 100%;
+            /* Автоматическая высота, чтобы изображение не обрезалось */
+            height: auto;
+            /* Увеличиваем максимально допустимую высоту изображения, чтобы оно не обрезалось на устройствах с высоким соотношением сторон.
+               60vh позволяет почти полностью показать портретные фотографии даже на небольших экранах. */
+            max-height: 60vh;
+            /* Изображение должно полностью помещаться в отведённую область без обрезки. */
+            object-fit: contain;
+            display: block;
+            /* Скругляем углы самой картинки, чтобы фото не обрезалось по краям */
+            border-radius: 12px;
+        }
+
+        .photo-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+        }
+
+        .photo-overlay.final {
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+        }
+
+        .photo-caption {
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.7);
+            text-align: center;
+            margin-top: 0.8rem;
+            font-style: italic;
+            padding: 0 1rem;
+        }
+
+        /* Контейнер для квеста: ограничиваем высоту и разрешаем внутреннюю прокрутку,
+           чтобы длинные сцены помещались в пределах экрана без чрезмерной прокрутки. */
+        #questContainer {
+            /* Прокрутка внутри квеста — без лишней "рамки" снизу */
+            max-height: calc(100vh - 220px);
+            overflow-y: auto;
+            padding-bottom: 24px;
+        }
+        #questContainer.has-floating-nav{
+            /* Реальная высота плавающей навигации задаётся из JS в --floating-nav-h */
+            padding-bottom: calc(var(--floating-nav-h, 88px) + 24px + env(safe-area-inset-bottom));
+        }
+
+        /* Адаптивность для маленьких экранов */
+        @media (max-width: 600px) {
+            #questMode {
+                max-width: none;
+                padding: 10px;
+            }
+            .chapter {
+                padding: 20px;
+                margin-bottom: 30px;
+            }
+            .chapter-header h1 {
+                font-size: 1.3rem;
+            }
+            .chapter-content {
+                font-size: 0.9rem;
+            }
+            .photo-caption {
+                font-size: 0.85rem;
+            }
+        }
+
+        /* Адаптивность для обороны: мягкая подстройка компоновки на экранах ≤ 1200px */
+        @media (max-width: 1200px) {
+            /*
+             * Планшеты/небольшие ноутбуки: сохраняем 2 колонки,
+             * но не даём панели "съедать" всё пространство.
+             */
+            .defense-container {
+                grid-template-columns: minmax(480px, 1fr) clamp(240px, 30vw, 340px);
+            }
+            #gameCanvas {
+                /* В режиме узкого экрана канвас полностью адаптируется по ширине */
+                width: 100% !important;
+                height: auto !important;
+                aspect-ratio: 4 / 3;
+                max-width: 100%;
+                margin: 0 !important;
+            }
+        }
+
+        .dialog-line {
+            margin-bottom: 1.8rem;
+            padding: 1.2rem;
+            background: rgba(26, 26, 46, 0.7);
+            border-radius: 10px;
+            border-left: 4px solid;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .speaker {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 0.8rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .speaker-archive {
+            color: #C9B07A;
+            border-left-color: #C9B07A;
+        }
+
+        .speaker-student {
+            color: #D8C3A5;
+            border-left-color: #D8C3A5;
+        }
+
+        .speaker-icon {
+            font-size: 1.2rem;
+        }
+
+        .dialog-text {
+            font-size: 1.15rem;
+            line-height: 1.7;
+            color: rgba(255, 255, 255, 0.95);
+            text-align: justify;
+            padding-left: 2rem;
+        }
+
+        .choice-buttons {
+            text-align: center;
+            margin-top: 2rem;
+            /* Фиксируем панель с кнопками у нижнего края экрана, чтобы пользователю не приходилось прокручивать страницу до конца */
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+        }
+
+        .choice-btn, .return-menu-btn {
+            padding: 16px 35px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, #C9B07A, #E0C98F);
+            border: none;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin: 2rem auto;
+            min-width: 300px;
+            letter-spacing: 0.5px;
+        }
+
+        .choice-btn:hover, .return-menu-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(201, 176, 122, 0.4);
+            background: linear-gradient(135deg, #E0C98F, #50e0f0);
+        }
+
+        .btn-icon {
+            font-size: 1.3rem;
+        }
+
+        /* Финальный экран */
+        .final-screen {
+            animation: fadeInUp 0.8s ease;
+            text-align: center;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .final-header {
+            margin-bottom: 2rem;
+        }
+
+        .final-title {
+            font-size: 2.8rem;
+            background: linear-gradient(135deg, #C9B07A, #8C4A3B);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        .final-icon {
+            font-size: 4rem;
+            opacity: 0.8;
+            margin-bottom: 1rem;
+        }
+
+        .final-content {
+            font-size: 1.3rem;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.95);
+            text-align: center;
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: rgba(26, 26, 46, 0.7);
+            border-radius: 15px;
+            border: 2px solid rgba(201, 176, 122, 0.3);
+        }
+
+        /* Режим защиты полигона */
+        #defenseMode {
+            /*
+             * Адаптивная ширина полигона: на больших экранах используем больше пространства,
+             * но не раздуваем интерфейс до бесконечности.
+             */
+            padding: clamp(12px, 2vw, 24px);
+            width: min(1600px, 96vw);
+            max-width: none;
+            margin: 0 auto;
+        }
+
+        .defense-title {
+            font-size: 2.2rem;
+            color: #8C4A3B;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+            text-shadow: 0 2px 10px rgba(140, 74, 59, 0.3);
+            letter-spacing: 1px;
+        }
+
+        .defense-container {
+            /* Используем CSS Grid для более предсказуемого расположения игровых блоков.
+               На широких экранах игровое поле занимает всё доступное пространство, панель башен — фиксированной ширины.
+               На узких экранах элементы располагаются вертикально (см. медиа‑запрос). */
+            display: grid !important;
+            /*
+             * 1) Игровое поле растягивается, но не становится слишком узким.
+             * 2) Панель башен — "плавающей" ширины через clamp, чтобы на разных дисплеях
+             *    не выглядела ни микроскопической, ни чрезмерно широкой.
+             */
+            grid-template-columns: minmax(560px, 1fr) clamp(260px, 22vw, 360px);
+            gap: clamp(14px, 2vw, 22px);
+            align-items: flex-start;
+            margin-top: 20px;
+        }
+
+        /* Заголовок и блок с историческим фактом занимают всю ширину сетки */
+        .defense-container > .game-header,
+        .defense-container > .historical-fact {
+            grid-column: span 2;
+        }
+
+        /* Для экранов меньше 900px панель башен уходит под канвас, а сетка становится одноколоночной */
+        @media (max-width: 900px) {
+            .defense-container {
+                /* Переключаемся на одну колонку: канвас и панель башен идут друг за другом */
+                grid-template-columns: 1fr !important;
+            }
+
+            .defense-container > .game-header,
+            .defense-container > .historical-fact {
+                grid-column: span 1;
+            }
+            .tower-panel {
+                width: 100% !important;
+                max-width: none !important;
+            }
+        }
+
+        .game-area {
+            flex: 1;
+        }
+
+        #gameCanvas {
+            background: #0a0a1a;
+            border: 2px solid rgba(201, 176, 122, 0.3);
+            border-radius: 10px;
+            display: block;
+        }
+
+        .tower-panel {
+            width: 100%;
+            max-width: 360px;
+            background: rgba(26, 26, 46, 0.8);
+            border-radius: 10px;
+            padding: clamp(12px, 1.6vw, 20px);
+            border: 2px solid var(--arch-border);
+        }
+
+        .tower-card {
+            padding: 1.2rem;
+            background: linear-gradient(135deg, rgba(26, 26, 46, 0.9), rgba(42, 42, 74, 0.9));
+            border: 2px solid rgba(201, 176, 122, 0.3);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 1rem;
+        }
+
+        .tower-card:hover {
+            background: linear-gradient(135deg, rgba(42, 42, 74, 0.9), rgba(58, 58, 106, 0.9));
+            border-color: #C9B07A;
+        }
+
+        .tower-card.selected {
+            background: linear-gradient(135deg, rgba(201, 176, 122, 0.22), rgba(224, 201, 143, 0.18));
+            border-color: #C9B07A;
+        }
+
+        .tower-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 1rem;
+        }
+
+        .tower-icon {
+            font-size: 1.8rem;
+        }
+
+        .tower-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        .tower-stats {
+            margin: 1rem 0;
+            padding: 0.8rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+        }
+
+        .stat {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .stat-label {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .stat-value {
+            color: white;
+            font-weight: 600;
+        }
+
+        .tower-history {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.6);
+            font-style: italic;
+            margin: 0.8rem 0;
+            padding-top: 0.8rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .tower-cost {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #D8C3A5;
+            text-align: center;
+            padding-top: 0.8rem;
+            border-top: 1px solid rgba(216, 195, 165, 0.3);
+        }
+
+        .game-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(26, 26, 46, 0.8);
+            border-radius: 10px;
+            border: 2px solid rgba(201, 176, 122, 0.3);
+        }
+
+        /* Заголовок оборонительного режима: занимает всю ширину контейнера и располагает элементы слева и справа */
+        .game-header {
+            flex-basis: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .game-header h2 {
+            font-size: clamp(1.25rem, 1.6vw, 1.75rem);
+            letter-spacing: 2px;
+            color: var(--arch-gold);
+        }
+
+        .stat-item {
+            font-size: clamp(0.95rem, 1.1vw, 1.1rem);
+            white-space: nowrap;
+        }
+
+        .game-header .stat-value {
+            color: var(--arch-gold);
+        }
+        .game-header .stats {
+            display: flex;
+            gap: 20px;
+        }
+
+        /* Канвас и панель башен в основном расположены рядом. Канвас заполняет доступное пространство, панель имеет фиксированную ширину. */
+        #gameCanvas {
+            flex: 1;
+            /* Позволяем канвасу уменьшаться по ширине, заполняя всю доступную ширину родительского блока. */
+            width: 100% !important;
+            /* Высота автоматически рассчитывается исходя из заданного соотношения сторон. */
+            height: auto !important;
+            /* Сохраняем соотношение сторон холста 4:3 независимо от размеров устройства. */
+            aspect-ratio: 4 / 3;
+            max-width: 100%;
+            /* Отменяем авто-выравнивание по центру, чтобы канвас занимал всё доступное пространство в контейнере */
+            margin: 0;
+        }
+        .tower-panel {
+            /* Адаптивная ширина панели башен на широких экранах */
+            width: 100%;
+            max-width: 360px;
+            flex-shrink: 0;
+        }
+
+        .info-item {
+            text-align: center;
+            flex: 1;
+        }
+
+        .info-label {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #C9B07A;
+        }
+
+        .historical-fact {
+            background: rgba(26, 26, 46, 0.9);
+            border: 2px solid rgba(201, 176, 122, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .fact-title {
+            color: #D8C3A5;
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .fact-content {
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.6;
+        }
+
+        .next-wave-btn {
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #8C4A3B, #B86B5F);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+        }
+
+        .next-wave-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(140, 74, 59, 0.4);
+        }
+
+        /* Звуковые контролы */
+        .sound-controls {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            /* Делаем панель звука компактной и тёмной */
+            background: rgba(26, 26, 46, 0.9);
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(201, 176, 122, 0.3);
+        }
+
+        #soundBtn {
+            padding: 10px 20px;
+            background: rgba(26, 26, 46, 0.9);
+            border: 2px solid #C9B07A;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        #soundBtn:hover {
+            background: rgba(201, 176, 122, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .volume-slider {
+            /* Уменьшаем ширину ползунка громкости, чтобы панель была аккуратнее */
+            width: 80px;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            #titleTypewriter {
+                font-size: 2.5rem;
+            }
+
+            #subtitle {
+                font-size: 1.2rem;
+            }
+
+            .menu-btn {
+                min-width: 250px;
+                padding: 15px 30px;
+                font-size: 1.1rem;
+            }
+
+            .chapter-title {
+                font-size: 1.5rem;
+            }
+
+            .dialog-text {
+                font-size: 1rem;
+                padding-left: 1rem;
+            }
+
+            .final-title {
+                font-size: 2rem;
+            }
+
+            .final-content {
+                font-size: 1.1rem;
+                padding: 1.5rem;
+            }
+
+            /* Перестраиваем сетку режима "Полигон" на маленьких экранах.
+               Вместо flex используем CSS Grid: одна колонка, канвас и панель башен располагаются по вертикали. */
+            .defense-container {
+                grid-template-columns: 1fr !important;
+            }
+
+            .tower-panel {
+                width: 100% !important;
+                /* не меняем порядок панели, чтобы она располагалась под канвасом по умолчанию */
+                flex-basis: auto !important;
+            }
+
+            #gameCanvas {
+                width: 100% !important;
+                height: auto !important;
+                /* Поддерживаем соотношение сторон 4:3 на маленьких экранах */
+                aspect-ratio: 4 / 3;
+                margin: 0 !important;
+            }
+        }
+
+        /* =============================================================
+           МУЗЕЙНАЯ СТАБИЛЬНОСТЬ + АДАПТАЦИЯ (фиксы после замечаний)
+           Цели:
+           - На десктопе экран «киоск»: страница не скроллится, скролл внутри контейнеров.
+           - На всех устройствах шрифты/отступы без крайностей (не огромные и не микроскопические).
+           - Скрыть видимые скроллбары, сохранив прокрутку.
+           - Добавить мягкий blur и лёгкий «архивный» tint без потери читаемости.
+           ============================================================= */
+
+        :root {
+            --ui-safe-top: 88px;   /* место под кнопку «МЕНЮ» и блок звука */
+            --ui-safe-bottom: 140px; /* место под фиксированные кнопки выбора */
+        }
+
+        /* Плавная типографика без «скачков» */
+        #titleTypewriter { font-size: clamp(2.1rem, 4.8vw, 3.5rem) !important; }
+        #subtitle        { font-size: clamp(1.0rem, 2.2vw, 1.5rem) !important; }
+        .menu-btn        { font-size: clamp(1.0rem, 1.8vw, 1.3rem) !important; }
+        .chapter-title   { font-size: clamp(1.35rem, 2.2vw, 2.0rem) !important; }
+        .dialog-text     { font-size: clamp(0.98rem, 1.35vw, 1.15rem) !important; }
+        .tower-name      { font-size: clamp(1.05rem, 1.4vw, 1.3rem) !important; }
+        .stat, .fact-content { font-size: clamp(0.92rem, 1.15vw, 1.05rem) !important; }
+
+        /* Скрываем скроллбары, но оставляем прокрутку */
+        #questContainer,
+        .gallery-container {
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        #questContainer::-webkit-scrollbar,
+        .gallery-container::-webkit-scrollbar {
+            width: 0;
+            height: 0;
+        }
+
+        /* Музейный blur на ключевых поверхностях */
+        .chapter,
+        .tower-panel,
+        .tower-card,
+        .historical-fact,
+        .sound-controls,
+        .back-btn {
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+        }
+
+	        /* =====================
+	           ЗВУК: ещё компактнее + раскрывается по нажатию
+	           ===================== */
+	        .sound-controls {
+	            top: clamp(10px, 1.6vw, 18px) !important;
+	            right: clamp(10px, 1.6vw, 18px) !important;
+	            padding: 4px !important;
+	            border-radius: 14px !important;
+	            gap: 8px !important;
+	            background: rgba(12, 14, 24, 0.42) !important;
+	            border: 1px solid var(--arch-border) !important;
+	            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35) !important;
+	            display: flex !important;
+	            flex-direction: column !important;
+	            align-items: stretch !important;
+	            width: 44px !important; /* collapsed */
+	            overflow: hidden !important;
+	            transition: width 220ms ease, padding 220ms ease, background 220ms ease, border-color 220ms ease !important;
+	        }
+	        .sound-controls.is-open {
+	            width: clamp(168px, 18vw, 208px) !important;
+	            padding: 6px 8px 8px !important;
+	        }
+
+	        .sound-panel-toggle {
+	            width: 36px !important;
+	            height: 36px !important;
+	            border-radius: 12px !important;
+	            border: 1px solid var(--arch-border) !important;
+	            background: rgba(12, 14, 24, 0.38) !important;
+	            color: rgba(255, 255, 255, 0.92) !important;
+	            cursor: pointer !important;
+	            display: grid !important;
+	            place-items: center !important;
+	            font-size: 18px !important;
+	            line-height: 1 !important;
+	            user-select: none !important;
+	            -webkit-tap-highlight-color: transparent !important;
+	            backdrop-filter: blur(14px) saturate(130%) !important;
+	            -webkit-backdrop-filter: blur(14px) saturate(130%) !important;
+	            transition: background 180ms ease, border-color 180ms ease, transform 180ms ease !important;
+	        }
+	        .sound-controls.is-open .sound-panel-toggle {
+	            width: 100% !important;
+	            height: 34px !important;
+	        }
+	        .sound-panel-toggle:hover {
+	            background: rgba(201, 176, 122, 0.12) !important;
+	            border-color: rgba(201, 176, 122, 0.55) !important;
+	            transform: translateY(-1px) !important;
+	        }
+
+	        .sound-panel-body {
+	            margin-top: 6px !important;
+	            opacity: 0 !important;
+	            max-height: 0 !important;
+	            transform: translateY(-4px) !important;
+	            pointer-events: none !important;
+	            overflow: hidden !important;
+	            transition: max-height 220ms ease, opacity 180ms ease, transform 220ms ease !important;
+	        }
+	        .sound-controls.is-open .sound-panel-body {
+	            opacity: 1 !important;
+	            max-height: 140px !important;
+	            transform: translateY(0) !important;
+	            pointer-events: auto !important;
+	        }
+
+	        #soundBtn {
+	            width: 100% !important;
+	            padding: 6px 10px !important;
+	            font-size: 0.85rem !important;
+	            border-radius: 12px !important;
+	            border: 1px solid var(--arch-border) !important;
+	            background: rgba(12, 14, 24, 0.32) !important;
+	            backdrop-filter: blur(12px) saturate(130%) !important;
+	            -webkit-backdrop-filter: blur(12px) saturate(130%) !important;
+	            letter-spacing: 0.3px !important;
+	        }
+	        #soundBtn:hover {
+	            background: rgba(201, 176, 122, 0.14) !important;
+	            border-color: rgba(201, 176, 122, 0.55) !important;
+	            transform: translateY(-1px) !important;
+	        }
+
+	        .sound-controls .volume-control {
+	            display: flex !important;
+	            align-items: center !important;
+	            justify-content: space-between !important;
+	            gap: 10px !important;
+	            padding-top: 6px !important;
+	        }
+	        .sound-controls .volume-control label {
+	            font-size: 11px !important;
+	            opacity: 0.82 !important;
+	            margin: 0 !important;
+	            white-space: nowrap;
+	        }
+	        .volume-slider {
+	            width: clamp(90px, 12vw, 130px) !important;
+	        }
+
+        /* =====================
+           ПОЛИГОН: компактность UI при изменении окна
+           (панель башен адаптируется по ширине, карточки не раздуваются)
+           ===================== */
+
+        /* Базовый грид: 1 колонка (обычно панель справа от канваса) */
+        #defenseMode #towerPanel {
+            display: grid !important;
+            grid-template-columns: 1fr;
+            gap: clamp(10px, 1.3vw, 14px) !important;
+        }
+
+        /* Убираем внешние отступы карточек — расстояния задаёт grid-gap */
+        #defenseMode .tower-card {
+            margin: 0 !important;
+            min-width: 0;
+        }
+
+        /* Маленькие экраны: 2 колонки */
+        @media (max-width: 560px) {
+            #defenseMode #towerPanel {
+                grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+            }
+            /* Историю скрываем, чтобы карточки не становились «простынёй» */
+            #defenseMode .tower-history {
+                display: none !important;
+            }
+            /* Статы компактнее (2 колонки) */
+            #defenseMode .tower-stats {
+                display: grid !important;
+                grid-template-columns: 1fr 1fr;
+                gap: 4px 8px;
+            }
+        }
+
+        /* Средние экраны (панель под канвасом): 3 колонки */
+        @media (min-width: 561px) and (max-width: 900px) {
+            #defenseMode #towerPanel {
+                grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+            }
+            /* История в 2 строки вместо полного текста */
+            #defenseMode .tower-history {
+                display: -webkit-box !important;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
+            #defenseMode .tower-stats {
+                display: grid !important;
+                grid-template-columns: 1fr 1fr;
+                gap: 4px 8px;
+            }
+        }
+
+        /* Общая компактность для всех экранов <= 900px */
+        @media (max-width: 900px) {
+            #defenseMode .tower-stats {
+                margin: clamp(6px, 0.8vw, 10px) 0 !important;
+                padding: clamp(6px, 0.8vw, 10px) !important;
+            }
+            #defenseMode .stat { margin-bottom: 0 !important; }
+            #defenseMode .tower-name { font-size: clamp(0.95rem, 1.1vw, 1.05rem) !important; }
+            #defenseMode .tower-cost { font-size: clamp(0.9rem, 1vw, 1.0rem) !important; }
+        }
+
+
+        #defenseMode .game-header {
+            margin-bottom: clamp(10px, 1.5vw, 18px) !important;
+        }
+        #defenseMode .game-header .stats {
+            gap: clamp(10px, 1.8vw, 18px) !important;
+            flex-wrap: wrap;
+        }
+
+        #defenseMode .tower-panel {
+            padding: clamp(10px, 1.4vw, 16px) !important;
+            border-radius: 12px !important;
+        }
+        #defenseMode .tower-card {
+            padding: clamp(10px, 1.2vw, 14px) !important;
+            /* В режиме grid расстояния задаёт gap, чтобы не было «раздувания» */
+            margin: 0 !important;
+            border-radius: 12px !important;
+        }
+        #defenseMode .tower-header {
+            gap: 10px !important;
+            margin-bottom: clamp(8px, 1vw, 12px) !important;
+        }
+        #defenseMode .tower-icon {
+            font-size: clamp(1.3rem, 1.6vw, 1.65rem) !important;
+        }
+        #defenseMode .tower-name {
+            font-size: clamp(1.05rem, 1.15vw, 1.2rem) !important;
+        }
+        #defenseMode .tower-stats {
+            margin: clamp(8px, 1vw, 12px) 0 !important;
+            padding: clamp(8px, 0.9vw, 12px) !important;
+        }
+        #defenseMode .stat {
+            margin-bottom: 0.35rem !important;
+            font-size: clamp(0.88rem, 0.95vw, 0.98rem) !important;
+        }
+        #defenseMode .tower-history {
+            font-size: clamp(0.78rem, 0.85vw, 0.88rem) !important;
+            margin: clamp(6px, 0.8vw, 10px) 0 !important;
+            padding-top: clamp(6px, 0.8vw, 10px) !important;
+        }
+        #defenseMode .tower-cost {
+            font-size: clamp(0.95rem, 1vw, 1.05rem) !important;
+            padding-top: clamp(6px, 0.8vw, 10px) !important;
+        }
+
+        #defenseMode .historical-fact {
+            padding: clamp(12px, 1.4vw, 18px) !important;
+            margin-top: clamp(12px, 1.6vw, 20px) !important;
+            border-radius: 12px !important;
+        }
+        #defenseMode .fact-title {
+            font-size: clamp(1.05rem, 1.1vw, 1.25rem) !important;
+            margin-bottom: 8px !important;
+        }
+        #defenseMode .fact-content {
+            font-size: clamp(0.9rem, 1vw, 1.05rem) !important;
+            line-height: 1.5 !important;
+        }
+        #defenseMode .historical-fact .menu-btn {
+            padding: clamp(10px, 1.2vw, 14px) clamp(14px, 1.6vw, 20px) !important;
+            font-size: clamp(0.95rem, 0.95vw, 1.05rem) !important;
+            min-width: auto !important;
+            /* Перебиваем inline margin-top из HTML, чтобы кнопка не раздувала карточку факта */
+            margin-top: clamp(10px, 1.2vw, 14px) !important;
+        }
+
+
+        /* Кнопка «МЕНЮ» (верхний левый угол) — компактнее и в музейном стекле */
+        .back-btn {
+            padding: 10px 14px !important;
+            font-size: 0.95rem !important;
+            border-radius: 12px !important;
+            border: 1px solid var(--arch-border) !important;
+            background: rgba(12, 14, 24, 0.35) !important;
+            color: rgba(255, 255, 255, 0.95) !important;
+        }
+        .back-btn:hover {
+            background: rgba(201, 176, 122, 0.14) !important;
+            border-color: rgba(201, 176, 122, 0.55) !important;
+        }
+
+        /* Архивный tint + мягкий слой «старины» (без ухудшения контраста текста) */
+        body {
+            position: relative;
+            background:
+                radial-gradient(circle at 18% 22%, rgba(201, 176, 122, 0.18) 0%, transparent 55%),
+                radial-gradient(circle at 82% 30%, rgba(140, 74, 59, 0.12) 0%, transparent 60%),
+                radial-gradient(circle at 50% 92%, rgba(216, 195, 165, 0.10) 0%, transparent 65%),
+                linear-gradient(135deg, #070915 0%, #0a0a1a 50%, #06111f 100%) !important;
+            background-attachment: fixed;
+        }
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background:
+                radial-gradient(circle at 20% 18%, rgba(255, 230, 190, 0.06) 0%, transparent 45%),
+                radial-gradient(circle at 75% 70%, rgba(255, 230, 190, 0.05) 0%, transparent 55%),
+                linear-gradient(180deg, rgba(255, 214, 150, 0.04), rgba(0, 0, 0, 0.00));
+            mix-blend-mode: soft-light;
+            opacity: 0.55;
+            z-index: 0;
+        }
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background-image:
+                repeating-linear-gradient(0deg, rgba(255,255,255,0.02) 0 1px, transparent 1px 3px),
+                repeating-linear-gradient(90deg, rgba(255,255,255,0.015) 0 1px, transparent 1px 4px);
+            opacity: 0.25;
+            z-index: 0;
+        }
+
+        /* Контент поверх оверлеев */
+        #app, #loadingScreen { position: relative; z-index: 1; }
+
+        /* =====================
+           ДЕСКТОП: фиксированный экран
+           ===================== */
+        @media (min-width: 1024px) {
+            body { overflow: hidden; }
+            #app.active {
+                height: 100vh;
+                overflow: hidden;
+                padding: 24px;
+            }
+
+            /* Режимы занимают высоту экрана; прокрутка только внутри */
+            #questMode,
+            #galleryMode,
+            #defenseMode {
+                height: 100%;
+            }
+
+            /* QUEST: прокрутка только внутри контейнера с текстом */
+            #questMode {
+                padding-top: calc(var(--ui-safe-top) - 20px);
+                padding-bottom: var(--ui-safe-bottom);
+            }
+            #questContainer {
+                max-height: calc(100vh - var(--ui-safe-top) - var(--ui-safe-bottom));
+                overflow-y: auto;
+                padding-bottom: 24px;
+            }
+
+            /* GALLERY: прокрутка внутри сетки */
+            .gallery-container {
+                max-height: calc(100vh - var(--ui-safe-top));
+                overflow-y: auto;
+            }
+
+            /* DEFENSE: страница не скроллится, но внутри режима можно прокрутить (например, блок факта) */
+            #defenseMode {
+                overflow: hidden;
+            }
+            .defense-container {
+                max-height: calc(100vh - var(--ui-safe-top));
+                overflow-y: auto;
+                scrollbar-width: none;
+                -ms-overflow-style: none;
+            }
+            .defense-container::-webkit-scrollbar {
+                width: 0;
+                height: 0;
+            }
+        }
+
+        /* =========================================================
+           QUEST UI — Museum Expo + Dialogue (Hybrid)
+           ========================================================= */
+
+        :root {
+            --q-title: clamp(1.4rem, 1.1rem + 1.2vw, 2.2rem);
+            --q-body: clamp(1.02rem, 0.98rem + 0.35vw, 1.18rem);
+            --q-small: clamp(0.82rem, 0.78rem + 0.25vw, 0.96rem);
+            --q-pad: clamp(18px, 2.4vw, 32px);
+        }
+
+        #questMode {
+            max-width: 1100px;
+            padding: clamp(10px, 2.2vw, 22px);
+        }
+
+        /* ===== Stage‑Quest‑1: sticky tools + timeline ===== */
+        .quest-head {
+            position: sticky;
+            top: 10px;
+            z-index: 50;
+            margin: 0 0 14px;
+            padding: 12px 12px 10px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.10);
+            background: rgba(18, 20, 28, 0.72);
+            backdrop-filter: blur(22px) saturate(130%);
+            -webkit-backdrop-filter: blur(22px) saturate(130%);
+            box-shadow: 0 18px 60px rgba(0,0,0,0.45);
+        }
+
+        .quest-head-row {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .quest-head-left {
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .quest-head-scene {
+            font-size: 12px;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: rgba(183,244,255,0.92);
+        }
+
+        .quest-head-sub {
+            font-size: 12px;
+            color: rgba(255,255,255,0.72);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 46vw;
+        }
+
+        .quest-head-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        .quest-tool-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 12px;
+            border-radius: 12px;
+            border: 1px solid rgba(183,244,255,0.18);
+            background: rgba(0,0,0,0.22);
+            color: rgba(255,255,255,0.92);
+            cursor: pointer;
+            font-family: var(--font-family-base);
+            font-size: 0.94rem;
+            transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease, background 0.12s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .quest-tool-btn:hover {
+            transform: translateY(-1px);
+            border-color: rgba(183,244,255,0.32);
+            box-shadow: 0 14px 38px rgba(0,0,0,0.40);
+        }
+
+        .quest-tool-btn:active {
+            transform: translateY(0);
+        }
+
+        .quest-tool-btn:focus-visible {
+            outline: 3px solid rgba(183,244,255,0.35);
+            outline-offset: 2px;
+        }
+
+        .quest-tool-emoji { line-height: 1; }
+
+        @media (max-width: 460px) {
+            .quest-tool-text { display: none; }
+            .quest-tool-btn { padding: 10px 10px; }
+            .quest-head-sub { max-width: 40vw; }
+        }
+
+        .quest-timeline {
+            margin-top: 10px;
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+            overflow-x: auto;
+            padding-bottom: 2px;
+            scrollbar-width: none;
+        }
+        .quest-timeline::-webkit-scrollbar { height: 0; }
+
+        .timeline-node {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            min-width: 44px;
+            padding: 4px 6px;
+            border: none;
+            background: transparent;
+            color: rgba(255,255,255,0.68);
+            cursor: pointer;
+            border-radius: 10px;
+            transition: background 0.12s ease, transform 0.12s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .timeline-node:hover {
+            background: rgba(255,255,255,0.06);
+            transform: translateY(-1px);
+        }
+
+        .timeline-node:focus-visible {
+            outline: 3px solid rgba(183,244,255,0.30);
+            outline-offset: 2px;
+        }
+
+        .timeline-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 999px;
+            background: rgba(183,244,255,0.22);
+            border: 1px solid rgba(183,244,255,0.18);
+        }
+
+        .timeline-year {
+            font-size: 0.72rem;
+            opacity: 0.78;
+        }
+
+        .timeline-node.is-visited .timeline-dot {
+            background: rgba(183,244,255,0.40);
+        }
+
+        .timeline-node.is-active {
+            background: rgba(183,244,255,0.10);
+        }
+
+        .timeline-node.is-active .timeline-dot {
+            background: rgba(183,244,255,0.92);
+            border-color: rgba(183,244,255,0.92);
+            box-shadow: 0 0 0 4px rgba(183,244,255,0.18);
+        }
+
+        .timeline-node.is-active .timeline-year {
+            opacity: 1;
+            color: rgba(255,255,255,0.95);
+        }
+
+        /* Фото в сцене: клик => лайтбокс */
+        .photo-container.photo-button {
+            border: none;
+            background: transparent;
+            padding: 0;
+            width: 100%;
+            text-align: inherit;
+            cursor: zoom-in;
+        }
+
+        .photo-zoom-hint {
+            position: absolute;
+            right: 12px;
+            bottom: 12px;
+            padding: 6px 8px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.14);
+            background: rgba(0,0,0,0.45);
+            box-shadow: 0 10px 24px rgba(0,0,0,0.35);
+            transition: transform 0.12s ease, opacity 0.12s ease;
+            opacity: 0.88;
+        }
+
+        .photo-container.photo-button:hover .photo-zoom-hint {
+            transform: scale(1.06);
+            opacity: 1;
+        }
+
+        /* ===== Quest overlays (TOC / Glossary / Sources) ===== */
+        .quest-overlay {
+            position: fixed;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: min(24px, 5vw);
+            z-index: 1200;
+        }
+
+        .quest-overlay.is-open { display: flex; }
+
+        .quest-overlay-backdrop {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.70);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+        }
+
+        .quest-overlay-dialog {
+            position: relative;
+            width: min(720px, 100%);
+            max-height: min(78vh, calc(var(--vh, 1vh) * 78));
+            overflow: hidden;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.12);
+            background: rgba(18, 20, 28, 0.88);
+            box-shadow: 0 30px 90px rgba(0,0,0,0.60);
+        }
+
+        .quest-overlay-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 16px 16px 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .quest-overlay-title {
+            font-weight: 800;
+            letter-spacing: 0.10em;
+            text-transform: uppercase;
+            color: rgba(183,244,255,0.95);
+        }
+
+        .quest-overlay-sub {
+            margin-top: 4px;
+            font-size: 0.92rem;
+            color: rgba(255,255,255,0.68);
+        }
+
+        .quest-overlay-close {
+            padding: 10px 12px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.12);
+            background: rgba(0,0,0,0.24);
+            color: rgba(255,255,255,0.95);
+            cursor: pointer;
+            transition: transform 0.12s ease, border-color 0.12s ease, background 0.12s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .quest-overlay-close:hover {
+            transform: translateY(-1px);
+            border-color: rgba(183,244,255,0.28);
+            background: rgba(0,0,0,0.30);
+        }
+
+        .quest-overlay-close:focus-visible {
+            outline: 3px solid rgba(183,244,255,0.30);
+            outline-offset: 2px;
+        }
+
+        .quest-overlay-body {
+            padding: 14px 16px 18px;
+            overflow: auto;
+            max-height: calc(min(78vh, calc(var(--vh, 1vh) * 78)) - 72px);
+        }
+
+        .quest-toc-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .quest-toc-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            text-align: left;
+            padding: 14px 14px;
+            border-radius: 14px;
+            border: 1px solid rgba(255,255,255,0.10);
+            background: rgba(0,0,0,0.18);
+            color: rgba(255,255,255,0.92);
+            cursor: pointer;
+            transition: transform 0.12s ease, border-color 0.12s ease, background 0.12s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .quest-toc-item:hover {
+            transform: translateY(-1px);
+            border-color: rgba(183,244,255,0.22);
+            background: rgba(0,0,0,0.26);
+        }
+
+        .quest-toc-item.is-active {
+            border-color: rgba(183,244,255,0.45);
+            background: rgba(183,244,255,0.10);
+        }
+
+        .quest-toc-title {
+            font-weight: 700;
+            line-height: 1.25;
+        }
+
+        .quest-toc-meta {
+            margin-top: 4px;
+            font-size: 0.90rem;
+            color: rgba(255,255,255,0.66);
+        }
+
+        .quest-toc-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 34px;
+            height: 34px;
+            border-radius: 999px;
+            border: 1px solid rgba(255,255,255,0.12);
+            background: rgba(0,0,0,0.22);
+            font-weight: 800;
+            color: rgba(255,255,255,0.85);
+        }
+
+        .quest-toc-item.is-visited .quest-toc-badge {
+            border-color: rgba(183,244,255,0.35);
+            background: rgba(183,244,255,0.14);
+        }
+
+        .quest-glossary-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .quest-glossary-item {
+            padding: 14px 14px;
+            border-radius: 14px;
+            border: 1px solid rgba(255,255,255,0.10);
+            background: rgba(0,0,0,0.18);
+        }
+
+        .quest-glossary-term {
+            font-weight: 800;
+            color: rgba(183,244,255,0.95);
+            margin-bottom: 6px;
+        }
+
+        .quest-glossary-def {
+            color: rgba(255,255,255,0.80);
+            line-height: 1.55;
+        }
+
+        
+        .quest-empty {
+            padding: 18px 16px;
+            border-radius: 14px;
+            border: 1px dashed rgba(255,255,255,0.18);
+            background: rgba(0,0,0,0.14);
+        }
+
+        .quest-empty-title {
+            font-weight: 800;
+            color: rgba(255,255,255,0.90);
+            margin-bottom: 6px;
+        }
+
+        .quest-empty-sub {
+            color: rgba(255,255,255,0.70);
+            line-height: 1.5;
+        }
+
+        /* Stable viewport unit for mobile address-bar (set in JS) */
+        @media (max-width: 1023px) {
+            #questContainer {
+                max-height: calc(var(--vh, 1vh) * 100 - 190px);
+            }
+        }
+
+        .chapter--museum {
+            background: rgba(18, 20, 28, 0.55);
+            backdrop-filter: blur(22px) saturate(130%);
+            -webkit-backdrop-filter: blur(22px) saturate(130%);
+            border: 1px solid rgba(255, 255, 255, 0.10);
+            box-shadow: 0 22px 70px rgba(0, 0, 0, 0.55);
+            padding: var(--q-pad);
+        }
+
+        .chapter--museum .chapter-header {
+            margin-bottom: clamp(14px, 2.2vw, 26px);
+        }
+
+        .chapter--museum .chapter-kicker {
+            font-size: var(--q-small);
+            letter-spacing: 0.24em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.65);
+        }
+
+        .chapter--museum .chapter-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .chapter--museum .meta-chip {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 10px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.06);
+            font-size: var(--q-small);
+            color: rgba(255, 255, 255, 0.78);
+            line-height: 1;
+        }
+
+        .chapter--museum .meta-chip--scene {
+            border-color: rgba(201, 176, 122, 0.28);
+        }
+
+        .chapter--museum .chapter-title {
+            font-size: var(--q-title);
+            line-height: 1.18;
+            margin: 14px 0 10px;
+            color: #b7f4ff;
+            letter-spacing: 0.01em;
+        }
+
+        .chapter--museum .chapter-body {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: clamp(14px, 2.2vw, 28px);
+            align-items: start;
+        }
+
+        .chapter--museum .chapter-media,
+        .chapter--museum .chapter-content {
+            min-width: 0;
+        }
+
+        @media (min-width: 900px) {
+            .chapter--museum .chapter-body {
+                grid-template-columns: minmax(320px, 0.95fr) minmax(360px, 1.05fr);
+            }
+            .chapter--museum .chapter-photo {
+                max-height: 62vh;
+                object-fit: cover;
+            }
+        }
+
+        .chapter--museum .photo-container {
+            margin: 0;
+            border-radius: 14px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.10);
+            box-shadow: 0 14px 40px rgba(0,0,0,0.45);
+        }
+
+        .chapter--museum .chapter-photo {
+            width: 100%;
+            height: auto;
+            max-height: 42vh;
+            object-fit: cover;
+            display: block;
+            background: rgba(0,0,0,0.2);
+        }
+
+        .chapter--museum .photo-overlay {
+            height: 72px;
+            background: linear-gradient(to top, rgba(0,0,0,0.75), transparent);
+        }
+
+        .chapter--museum .photo-caption {
+            font-size: var(--q-small);
+            color: rgba(255,255,255,0.72);
+            margin-top: 10px;
+            text-align: left;
+            padding: 0 2px;
+        }
+
+        /* Dialogue bubbles */
+        .chapter--museum .dialog-line {
+            margin: 0 0 14px;
+            padding: 0;
+            background: transparent;
+            border: none;
+            border-radius: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            opacity: 0;
+            transform: translateY(6px);
+            animation: questLineIn 320ms ease forwards;
+            animation-delay: var(--delay, 0ms);
+        }
+
+        @keyframes questLineIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .chapter--museum .dialog-line.dialog-student { align-items: flex-end; }
+        .chapter--museum .dialog-line.dialog-archive { align-items: flex-start; }
+
+        .chapter--museum .speaker {
+            margin: 0;
+            font-size: var(--q-small);
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            opacity: 0.78;
+        }
+
+        .chapter--museum .dialog-text {
+            position: relative;
+            font-size: var(--q-body);
+            line-height: 1.6;
+            text-align: left;
+            max-width: min(62ch, 100%);
+            padding: 14px 16px;
+            border-radius: 16px;
+            backdrop-filter: blur(14px) saturate(140%);
+            -webkit-backdrop-filter: blur(14px) saturate(140%);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+        }
+
+        .chapter--museum .dialog-line.dialog-archive .dialog-text {
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(201, 176, 122, 0.22);
+            border-left: 3px solid rgba(201, 176, 122, 0.75);
+        }
+
+        .chapter--museum .dialog-line.dialog-archive .dialog-text::before {
+            content: "“";
+            position: absolute;
+            top: -14px;
+            left: 10px;
+            font-size: 2.4rem;
+            color: rgba(201, 176, 122, 0.38);
+        }
+
+        .chapter--museum .dialog-line.dialog-student .dialog-text {
+            background: rgba(216, 195, 165, 0.12);
+            border: 1px solid rgba(216, 195, 165, 0.23);
+            border-right: 3px solid rgba(216, 195, 165, 0.78);
+        }
+
+        .chapter--museum .dialog-line.dialog-student .dialog-text::before {
+            content: "";
+            position: absolute;
+            right: 12px;
+            top: -8px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(216, 195, 165, 0.35);
+        }
+
+        /* Choice buttons feel like museum UI */
+        .chapter--museum .choice-btn {
+            width: 100%;
+            max-width: 720px;
+        }
+
+        .chapter--museum .choice-btn .btn-text {
+            font-size: clamp(1rem, 0.96rem + 0.25vw, 1.08rem);
+        }
+
+
+    
+        /* ===== Quest scale overrides ===== */
+        :root { --qs: 1; }
+
+        body.quest-scale-active .chapter {
+            padding: calc(22px * var(--qs));
+            margin-bottom: calc(28px * var(--qs));
+        }
+        body.quest-scale-active .chapter-title {
+            font-size: clamp(1.35rem, calc(1.9rem * var(--qs)), 2.2rem);
+        }
+        body.quest-scale-active .dialog-text {
+            font-size: clamp(1.0rem, calc(1.15rem * var(--qs)), 1.3rem);
+            line-height: clamp(1.55, calc(1.7 * var(--qs)), 1.85);
+        }
+        body.quest-scale-active .photo-caption {
+            font-size: clamp(0.8rem, calc(0.95rem * var(--qs)), 1.0rem);
+        }
+        body.quest-scale-active .chapter-photo {
+            max-height: clamp(38vh, calc(52vh * var(--qs)), 60vh);
+        }
+
+
+
+        /* ===== Quest layout gap fix (убираем пустоту снизу) ===== */
+        #questMode {
+            display: flex;
+            flex-direction: column;
+            /* Используем стабильную высоту на мобильных, чтобы ничего не "прыгало" */
+            height: calc(var(--vh, 1vh) * 100);
+        }
+        #questContainer {
+            flex: 1;
+            min-height: 0;
+            /* ВАЖНО: убираем искусственные max-height, которые создавали пустую область снизу */
+            max-height: none !important;
+            overflow-y: auto;
+        }
+        /* Нижний отступ добавляем только когда есть плавающая навигация */
+        #questContainer.has-floating-nav {
+            /* Реальная высота плавающей навигации задаётся из JS в --floating-nav-h */
+            padding-bottom: calc(var(--floating-nav-h, 72px) + 20px + env(safe-area-inset-bottom));
+        }
+
+
+/* === Defense fact overlay (desktop only) === */
+
+@media (min-width: 901px){
+  #defenseMode #historicalFact{
+    position: fixed !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    bottom: clamp(10px, 1.8vw, 18px) !important;
+    width: min(980px, 92vw) !important;
+    max-height: min(38vh, 420px) !important;
+    padding: clamp(10px, 1.2vw, 14px) !important;
+    margin: 0 !important;
+    border-radius: 14px !important;
+    background: rgba(12,14,24,0.42) !important;
+    backdrop-filter: blur(14px) saturate(130%) !important;
+    -webkit-backdrop-filter: blur(14px) saturate(130%) !important;
+    box-shadow: 0 12px 34px rgba(0,0,0,0.35) !important;
+    z-index: 900 !important;
+  }
+  #defenseMode .fact-content{
+    max-height: calc(100% - 64px) !important;
+    overflow: auto !important;
+  }
+  #defenseMode .fact-content::-webkit-scrollbar{width:0;height:0}
+  #defenseMode .fact-content{scrollbar-width:none}
+  #defenseMode .historical-fact .next-wave-btn{
+    align-self:center !important;
+    padding: clamp(8px, 1.1vw, 12px) clamp(14px, 1.6vw, 20px) !important;
+    font-size: clamp(0.9rem, 0.95vw, 1.0rem) !important;
+    border-radius: 12px !important;
+    background: rgba(12,14,24,0.35) !important;
+    border: 1px solid var(--arch-border) !important;
+    color: rgba(255,255,255,0.95) !important;
+    backdrop-filter: blur(14px) saturate(130%) !important;
+    -webkit-backdrop-filter: blur(14px) saturate(130%) !important;
+    margin-top: clamp(8px, 1.1vw, 12px) !important;
+  }
+  #defenseMode .historical-fact .next-wave-btn:hover{
+    background: rgba(201,176,122,0.14) !important;
+    border-color: rgba(201,176,122,0.55) !important;
+  }
+}
+
+/* =========================================================
+   Defense mobile bottom sheet (tabs: Башни / Факт)
+   ========================================================= */
+
+.defense-sheet{
+  width: 100%;
+}
+
+/* Drag handle for mobile bottom sheet */
+.defense-sheet-handle{
+  display: none;
+}
+
+.defense-sheet-tabs{
+  display: none;
+}
+
+.fact-placeholder{
+  display: none;
+  padding: 14px;
+  text-align: center;
+  color: rgba(255,255,255,0.80);
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  background: rgba(12,14,24,0.22);
+  border: 1px dashed rgba(201,176,122,0.32);
+  border-radius: 14px;
+}
+
+#sheetPanelFact #historicalFact.hidden + .fact-placeholder{
+  display: block;
+}
+
+@media (max-width: 900px){
+  /* отключаем fixed-оверлей — факт живёт внутри нижней панели */
+  #defenseMode #historicalFact{
+    position: static !important;
+    left: auto !important;
+    bottom: auto !important;
+    transform: none !important;
+    width: 100% !important;
+    max-height: none !important;
+    margin: 0 !important;
+    z-index: auto !important;
+  }
+
+  .defense-sheet{
+    /* Height of the sheet body is controlled via --sheetVh (set by JS). */
+    --sheetVh: 42;
+    margin-top: 10px;
+    background: rgba(12,14,24,0.22);
+    border: 1px solid rgba(201,176,122,0.20);
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 14px 46px rgba(0,0,0,0.28);
+    backdrop-filter: blur(14px) saturate(135%);
+    -webkit-backdrop-filter: blur(14px) saturate(135%);
+  }
+
+  .defense-sheet-handle{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 22px;
+    cursor: grab;
+    touch-action: none;
+    background: rgba(0,0,0,0.10);
+    border-bottom: 1px solid rgba(201,176,122,0.14);
+  }
+
+  .defense-sheet-handle::before{
+    content: '';
+    width: 46px;
+    height: 5px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.22);
+    border: 1px solid rgba(201,176,122,0.18);
+  }
+
+  .defense-sheet.is-dragging .defense-sheet-handle{
+    cursor: grabbing;
+  }
+
+  .defense-sheet-tabs{
+    display: flex;
+    gap: 8px;
+    padding: 10px;
+    background: rgba(0,0,0,0.16);
+    border-bottom: 1px solid rgba(201,176,122,0.18);
+  }
+
+  .defense-sheet-tab{
+    flex: 1;
+    height: 44px;
+    border-radius: 14px;
+    border: 1px solid rgba(201,176,122,0.25);
+    background: rgba(10,10,26,0.40);
+    color: rgba(255,255,255,0.92);
+    font-weight: 900;
+    letter-spacing: 0.9px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: transform 120ms ease, background 120ms ease, border-color 120ms ease;
+  }
+
+  .defense-sheet-tab:active{
+    transform: translateY(1px) scale(0.99);
+  }
+
+  .defense-sheet-tab.is-active{
+    background: rgba(201,176,122,0.22);
+    border-color: rgba(201,176,122,0.58);
+    color: rgba(255,255,255,0.98);
+  }
+
+  .defense-sheet-tab.has-new{
+    box-shadow: 0 0 0 2px rgba(var(--color-teal-500-rgb), 0.18) inset,
+                0 0 18px rgba(var(--color-teal-500-rgb), 0.18);
+  }
+
+  .defense-sheet-body{
+    padding: 10px;
+    padding-bottom: calc(10px + env(safe-area-inset-bottom));
+    min-height: 190px;
+    max-height: calc(var(--sheetVh, 42) * var(--vh, 1vh));
+    overflow: hidden;
+    transition: max-height 180ms ease;
+  }
+
+  .defense-sheet.is-dragging .defense-sheet-body{
+    transition: none;
+  }
+
+  .defense-sheet-panel{
+    display: none;
+    height: 100%;
+    overflow: auto;
+    scrollbar-width: none;
+  }
+
+  .defense-sheet-panel::-webkit-scrollbar{ width: 0; height: 0; }
+
+  .defense-sheet-panel.is-active{
+    display: block;
+  }
+
+  /* Внутри панели не нужны внешние отступы */
+  #defenseMode .tower-panel{
+    margin: 0 !important;
+  }
+  #defenseMode .historical-fact{
+    margin: 0 !important;
+  }
+}
+
+/* Телефонный "киоск": шапка + поле + нижняя панель, без наложений */
+@media (max-width: 700px){
+  #defenseMode{
+    height: calc(var(--vh, 1vh) * 100);
+    overflow: hidden;
+    width: 100% !important;
+    padding: 12px !important;
+    margin: 0 auto !important;
+  }
+
+  #defenseMode .defense-container{
+    display: flex !important;
+    flex-direction: column;
+    height: 100%;
+    max-height: 100%;
+    overflow: hidden;
+    padding: 0 !important;
+    margin-top: 0 !important;
+    gap: 12px !important;
+  }
+
+  #defenseMode .game-header{
+    margin-bottom: 0 !important;
+  }
+
+  #defenseMode #gameCanvas,
+  #defenseMode .game-canvas{
+    flex: 1 1 auto;
+    min-height: 170px;
+    height: 100% !important;
+    max-height: none !important;
+    aspect-ratio: auto !important;
+    margin: 0 !important;
+  }
+
+  #defenseMode .defense-sheet-body{
+    /* Slightly larger default on phones */
+    max-height: calc(var(--sheetVh, 46) * var(--vh, 1vh));
+    min-height: 220px;
+  }
+
+  #defenseMode .defense-sheet{
+    --sheetVh: 46;
+  }
+}
+
+/* Placement hint (why tower can't be placed) */
+.placement-hint{
+  position: fixed;
+  left: 0;
+  top: 0;
+  transform: translate(-50%, -115%);
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: rgba(0,0,0,0.78);
+  color: rgba(255,255,255,0.95);
+  border: 1px solid rgba(201,176,122,0.35);
+  box-shadow: 0 14px 34px rgba(0,0,0,0.45);
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: 0.2px;
+  z-index: 1400;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 120ms ease, transform 120ms ease;
+}
+
+.placement-hint.is-visible{
+  opacity: 1;
+  transform: translate(-50%, -125%);
+}
+
+.placement-hint.is-ok{
+  color: rgba(193, 255, 233, 0.98);
+  border-color: rgba(var(--color-teal-500-rgb), 0.45);
+}
+
+
+@media (prefers-reduced-motion: reduce){
+  html{ scroll-behavior: auto; }
+  #loadingScreen{ transition: none; }
+  .radar-icon,
+  .radar-icon::before{
+    animation: none !important;
+  }
+  .subtitle-loading,
+  .menu-buttons{
+    animation: none !important;
+    opacity: 1 !important;
+  }
+  .skip-hint{ transition: none !important; }
+  #questMode:not(.hidden) .quest-container,
+  #galleryMode:not(.hidden) .gallery-container,
+  #defenseMode:not(.hidden) .defense-container{
+    animation: none !important;
+  }
+
+  .mode-splash,
+  .help-overlay,
+  .tutorial-overlay,
+  .lightbox-overlay{
+    transition: none !important;
+  }
+
+  .mode-splash-inner{
+    transition: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+
+  .tutorial-highlight{
+    animation: none !important;
+  }
+
+  .toast{
+    animation: none !important;
+    opacity: 1 !important;
+    transform: translateX(-50%) translateY(0) scale(1) !important;
+  }
+}
+
+
+/* ============================================================
+   Pre-release: мобильное масштабирование + safe areas
+   - Исправляет 100vh на мобильных (dvh где доступно)
+   - Учитывает вырезы/скругления (safe-area-inset-*)
+   ============================================================ */
+
+:root{
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+
+  --app-vh: 100vh;
+
+  /* «Запас» под фиксированные элементы (кнопка меню + блок звука / нижняя навигация) */
+  --ui-safe-top: calc(88px + var(--safe-top));
+  --ui-safe-bottom: calc(140px + var(--safe-bottom));
+}
+
+@supports (height: 100dvh){
+  :root{ --app-vh: 100dvh; }
+}
+
+#loadingScreen{ height: var(--app-vh); }
+#app{ min-height: var(--app-vh); }
+
+@media (min-width: 1024px){
+  #app.active{ height: var(--app-vh); }
+}
+
+#questContainer{
+  max-height: calc(var(--app-vh) - var(--ui-safe-top) - var(--ui-safe-bottom));
+}
+
+@media (max-width: 520px){
+  #app{ padding: 16px; }
+
+  .back-btn{
+    top: calc(var(--space-16) + var(--safe-top));
+    left: calc(var(--space-16) + var(--safe-left));
+    padding: 12px 16px;
+  }
+
+  .sound-controls{
+    padding: 6px;
+    gap: 6px;
+  }
+}
+
+
+/* ============================================================
+   Pre-release pre2: единый адаптив + микро-вау + симметрия кнопок
+   Цели:
+   - Кнопки "?" и "Звук" одинаковые (размер, отступы, выравнивание) во всех состояниях
+   - Никаких наездов/переполнений на 480/390/360px
+   - Лёгкие анимации появления и приятный "tap" отклик без лишней агрессии
+   ============================================================ */
+
+:root{
+  /* Базовые "fluid" величины для проекта */
+  --ui-pad: clamp(12px, 2.6vw, 24px);
+  --ui-gap: clamp(8px, 2.2vw, 16px);
+  --ui-radius: clamp(14px, 2.2vw, 20px);
+
+  /* Тап/микро-вау */
+  --tap-scale: 0.985;
+  --tap-shadow: 0 10px 28px rgba(0,0,0,0.32);
+  --hover-shadow: 0 16px 46px rgba(0,0,0,0.28);
+
+  /* Правый блок управления (help + sound) */
+  --ctl-btn: 44px;
+  --ctl-pad: 6px;
+  --ctl-gap: 8px;
+  --ctl-collapsed: calc(var(--ctl-btn) + var(--ctl-pad) * 2);
+}
+
+/* ---- Симметрия кнопок Help/Sound ---- */
+
+.sound-controls{
+  /* ВНИМАНИЕ: ниже намеренно используем !important,
+     чтобы перебить старые каскадные версии "sound-controls" из прежних стадий. */
+  top: calc(clamp(10px, 1.6vw, 18px) + var(--safe-top)) !important;
+  right: calc(clamp(10px, 1.6vw, 18px) + var(--safe-right)) !important;
+  width: var(--ctl-collapsed) !important;
+  padding: var(--ctl-pad) !important;
+  gap: var(--ctl-gap) !important;
+  border-radius: 16px !important;
+  align-items: stretch !important;
+  overflow: hidden !important;
+}
+
+.sound-controls.is-open{
+  width: clamp(190px, 22vw, 250px) !important;
+}
+
+/* Только иконки (установить/справка/звук) должны быть одинаковыми и квадратными */
+.sound-controls > button{
+  width: var(--ctl-btn) !important;
+  height: var(--ctl-btn) !important;
+  border-radius: 12px !important;
+  padding: 0 !important;
+  display: grid !important;
+  place-items: center !important;
+  align-self: flex-end !important;
+  line-height: 0 !important;
+}
+
+/* НЕ растягиваем sound-toggle (текстовую кнопку внутри панели) */
+.sound-controls .sound-panel-body{
+  width: 100% !important;
+}
+
+/* Важно: sound-panel-toggle не должен превращаться в "широкую" плашку при открытии */
+.sound-controls .sound-panel-toggle,
+.sound-controls.is-open .sound-panel-toggle{
+  width: var(--ctl-btn) !important;
+  height: var(--ctl-btn) !important;
+}
+
+/* SVG-иконки одинакового размера */
+.sound-controls > button .ui-icon{
+  width: 22px !important;
+  height: 22px !important;
+}
+
+/* Состояние mute: показываем слэш и прячем "волны" */
+.sound-panel-toggle .mute-slash{ opacity: 0; }
+.sound-panel-toggle.is-muted .mute-slash{ opacity: 1; }
+.sound-panel-toggle.is-muted .wave{ opacity: 0; }
+
+/* ---- Микро-вау: тактильный отклик и мягкие подсветки ---- */
+
+.menu-btn,
+.choice-btn,
+.tower-card,
+.gallery-item,
+.defense-btn,
+.back-btn,
+.help-btn,
+.sound-panel-toggle,
+.install-btn,
+.defense-sheet-tab{
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease,
+    background 160ms ease,
+    border-color 160ms ease,
+    filter 160ms ease;
+}
+
+@media (hover: hover){
+  .tower-card:hover,
+  .gallery-item:hover{
+    box-shadow: var(--hover-shadow);
+    transform: translateY(-2px);
+  }
+}
+
+/* "Haptic-like" на тач: чуть темнее/ярче + мини-сжатие */
+@media (hover: none){
+  .menu-btn:active,
+  .choice-btn:active,
+  .tower-card:active,
+  .gallery-item:active,
+  .defense-btn:active,
+  .back-btn:active,
+  .help-btn:active,
+  .sound-panel-toggle:active,
+  .install-btn:active,
+  .defense-sheet-tab:active{
+    transform: translateY(1px) scale(var(--tap-scale));
+    box-shadow: var(--tap-shadow);
+    filter: brightness(1.06);
+  }
+}
+
+/* Лёгкое появление карточек/режимов */
+@media (prefers-reduced-motion: no-preference){
+  @keyframes ui-fade-up{
+    from{ opacity: 0; transform: translateY(10px); }
+    to{ opacity: 1; transform: translateY(0); }
+  }
+
+  #questMode:not(.hidden) .quest-container,
+  #galleryMode:not(.hidden) .gallery-container,
+  #defenseMode:not(.hidden) .defense-container{
+    animation: ui-fade-up 220ms ease both;
+  }
+
+  /* В квесте новая сцена воспринимается как "карточка" */
+  #questMode:not(.hidden) .chapter{
+    animation: ui-fade-up 220ms ease both;
+  }
+}
+
+/* ---- Мобильный аудит: 480 / 390 / 360 ---- */
+
+@media (max-width: 480px){
+  #app{ padding: var(--ui-pad) !important; }
+
+  /* Меню: кнопки не должны выходить за экран */
+  .menu-buttons{
+    flex-direction: column !important;
+    gap: 14px !important;
+  }
+  .menu-btn{
+    width: min(92vw, 360px) !important;
+    min-width: 0 !important;
+    padding: 14px 18px !important;
+    letter-spacing: 1.2px !important;
+  }
+
+  /* Заголовок в заставке: без обрезания */
+  .title-typewriter,
+  #titleTypewriter{
+    letter-spacing: clamp(1.5px, 0.8vw, 3px) !important;
+    text-align: center;
+    padding-inline: 10px;
+  }
+
+  .menu-footer{
+    font-size: 12px !important;
+    opacity: 0.85;
+    text-align: center;
+    padding-inline: 14px;
+  }
+
+  .menu-consultant{
+    font-size: 11px !important;
+    margin-top: 6px;
+  }
+
+  /* Галерея: меньше отступов */
+  .gallery-container{
+    padding: var(--ui-pad) !important;
+    gap: 14px !important;
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Полигон: статистику в 2 колонки, чтобы не выпирало */
+  #defenseMode .stats{
+    display: grid !important;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px 12px !important;
+  }
+  #defenseMode .stat-item{ white-space: normal !important; }
+}
+
+@media (max-width: 390px){
+  :root{ --ctl-btn: 42px; --ctl-pad: 6px; --ctl-gap: 8px; }
+
+  .menu-btn{ padding: 13px 16px !important; }
+  .back-btn{
+    padding: 10px 14px !important;
+    border-radius: 12px !important;
+  }
+
+  #defenseMode .defense-controls .defense-btn{
+    min-width: 44px;
+  }
+}
+
+@media (max-width: 360px){
+  :root{ --ctl-btn: 40px; }
+
+  .project-logo{ width: 92px !important; height: 92px !important; margin-bottom: 18px !important; }
+  .menu-btn{ width: min(94vw, 340px) !important; }
+  .sound-controls.is-open{ width: min(92vw, 240px) !important; }
+}
+
+
+/* ============================================================
+   RELEASE CANDIDATE RC1 — Design System Pass
+   Цели:
+   - единый язык панелей (фон/обводка/тени)
+   - единая система кнопок и состояний (hover/active/focus)
+   - таймлайн квеста удобнее на мобилке (snap + hit-area + fade edges)
+   - правый блок управления (help/sound) всегда симметричный, даже когда панель раскрыта
+   ============================================================ */
+
+:root{
+  /* Единые "стеклянные" панели */
+  --rc-panel-bg: rgba(18, 20, 28, 0.74);
+  --rc-panel-bg-strong: rgba(18, 20, 28, 0.86);
+  --rc-panel-stroke: rgba(201, 176, 122, 0.28);
+  --rc-panel-stroke-strong: rgba(201, 176, 122, 0.46);
+  --rc-panel-shadow: 0 18px 60px rgba(0,0,0,0.45);
+  --rc-panel-shadow-soft: 0 12px 36px rgba(0,0,0,0.35);
+
+  /* Текст */
+  --rc-text: rgba(255,255,255,0.92);
+  --rc-muted: rgba(255,255,255,0.72);
+
+  /* Кнопки */
+  --rc-btn-radius: 14px;
+  --rc-btn-stroke: rgba(201, 176, 122, 0.35);
+  --rc-btn-stroke-hover: rgba(201, 176, 122, 0.55);
+  --rc-btn-bg: rgba(12, 14, 24, 0.34);
+  --rc-btn-bg-hover: rgba(12, 14, 24, 0.46);
+}
+
+/* ---- Единый язык "панелей" ---- */
+:where(.quest-head, .chapter, .quest-overlay-dialog){
+  background: var(--rc-panel-bg) !important;
+  border: 1px solid var(--rc-panel-stroke) !important;
+  border-radius: var(--ui-radius) !important;
+  box-shadow: var(--rc-panel-shadow) !important;
+}
+
+:where(.quest-overlay-dialog){
+  background: var(--rc-panel-bg-strong) !important;
+}
+
+:where(.historical-fact, #towerPanel, .tower-panel){
+  border-radius: var(--ui-radius) !important;
+  border-color: var(--rc-panel-stroke) !important;
+}
+
+/* Галерея: карточки в одном стиле */
+.gallery-item{
+  border-radius: var(--ui-radius) !important;
+  border: 1px solid var(--rc-panel-stroke) !important;
+  background: rgba(18, 20, 28, 0.62) !important;
+  box-shadow: var(--rc-panel-shadow-soft);
+}
+
+/* ---- Единая система кнопок (мягкая унификация без ломания дизайна) ---- */
+:where(.quest-tool-btn, .nav-icon-btn, .sound-toggle, .defense-btn){
+  border-radius: var(--rc-btn-radius) !important;
+  border-color: var(--rc-btn-stroke) !important;
+}
+
+:where(.quest-tool-btn:hover, .nav-icon-btn:hover, .sound-toggle:hover, .defense-btn:hover){
+  border-color: var(--rc-btn-stroke-hover) !important;
+}
+
+:where(.quest-tool-btn:focus-visible, .nav-icon-btn:focus-visible, .sound-toggle:focus-visible, .defense-btn:focus-visible){
+  outline: 3px solid rgba(201, 176, 122, 0.32) !important;
+  outline-offset: 2px !important;
+}
+
+/* ---- Правый блок управления: help/sound всегда квадратные и симметричные ---- */
+/* В старых блоках были правила width:100% для .sound-panel-toggle на мобилках — перебиваем. */
+.sound-controls > button{
+  width: var(--ctl-btn) !important;
+  height: var(--ctl-btn) !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  display: grid !important;
+  place-items: center !important;
+}
+
+/* Открытие панели не должно растягивать иконки */
+.sound-controls.is-open .sound-panel-toggle,
+.sound-controls.is-open .help-btn,
+.sound-controls.is-open .install-btn{
+  width: var(--ctl-btn) !important;
+  height: var(--ctl-btn) !important;
+}
+
+/* Иконки одинакового масштаба */
+.sound-controls .ui-icon{
+  width: 22px !important;
+  height: 22px !important;
+}
+
+/* Плашка управления чуть более "продуктовая" */
+.sound-controls{
+  border: 1px solid var(--rc-panel-stroke) !important;
+  background: rgba(18, 20, 28, 0.68) !important;
+  box-shadow: var(--rc-panel-shadow-soft) !important;
+}
+
+/* ---- Таймлайн квеста: удобнее на мобилке ---- */
+.quest-timeline{
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 8px;
+  /* лёгкий fade по краям, чтобы было понятно, что таймлайн скроллится */
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 18px, #000 calc(100% - 18px), transparent);
+  mask-image: linear-gradient(to right, transparent, #000 18px, #000 calc(100% - 18px), transparent);
+}
+
+.timeline-node{
+  scroll-snap-align: center;
+  min-height: 44px;
+  padding: 6px 8px;
+}
+
+/* На очень узких экранах уменьшаем шум (год чуть компактнее) */
+@media (max-width: 390px){
+  .timeline-node{ min-width: 42px; padding: 6px 6px; }
+  .timeline-year{ font-size: 0.66rem; }
+}
+
+/* ---- Полигон: читаемость HUD ---- */
+#defenseMode .game-header .stats{
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(201, 176, 122, 0.22);
+  background: rgba(0,0,0,0.14);
+}
+
+#defenseMode .game-header .stat-item{
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  white-space: nowrap;
+}
+
+#defenseMode .game-header .stat-value{
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- Микро‑вау: карточки слегка "дышат" при тапе ---- */
+@media (hover: none) and (pointer: coarse){
+  .chapter:active,
+  .gallery-item:active,
+  .tower-card:active{
+    transform: translateY(1px) scale(var(--tap-scale));
+    filter: brightness(1.04);
+  }
+}
+
+
+/* RC1: при раскрытии панели звука иконки остаются у правого края,
+   а тело панели растягивается на ширину контейнера */
+.sound-controls{
+  align-items: flex-end !important;
+}
+.sound-panel-body{
+  align-self: stretch;
+  width: 100%;
+}
+.sound-panel-body .sound-toggle,
+.sound-panel-body .volume-control{
+  width: 100%;
+}

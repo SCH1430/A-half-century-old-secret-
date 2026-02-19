@@ -1,0 +1,63 @@
+[
+  {
+    "name": "РЛС \"ДУНАЙ-2\"",
+    "range": 280,
+    "damage": 15,
+    "firerate": 1.0,
+    "cost": 600,
+    "color": "#C9B07A",
+    "icon": "📡",
+    "description": "Мощная РЛС дальнего обнаружения",
+    "history": "Дальность обнаружения >1000 км, цифровая ЭВМ 40 тыс. операций/сек",
+    "targetingDefault": "first",
+    "upgrade": {
+      "rangeStep": 0.12,
+      "damageStep": 0.35,
+      "firerateStep": 0.18
+    }
+  },
+  {
+    "name": "РЛС НАВЕДЕНИЯ",
+    "range": 180,
+    "damage": 30,
+    "firerate": 2.2,
+    "cost": 400,
+    "color": "#D8C3A5",
+    "icon": "🎯",
+    "description": "Точное сопровождение целей",
+    "history": "Обеспечивал точное наведение противоракет",
+    "targetingDefault": "nearest",
+    "upgrade": {
+      "rangeStep": 0.12,
+      "damageStep": 0.35,
+      "firerateStep": 0.18
+    },
+    "effects": {
+      "slow": {
+        "mult": 0.75,
+        "durationMs": 900,
+        "scale": {
+          "multStep": -0.05,
+          "durationStep": 200
+        }
+      }
+    }
+  },
+  {
+    "name": "ПУ В-1000",
+    "range": 120,
+    "damage": 65,
+    "firerate": 0.4,
+    "cost": 500,
+    "color": "#8C4A3B",
+    "icon": "🚀",
+    "description": "Пусковая установка противоракет",
+    "history": "Противоракета системы \"А\" (П.Д. Грушин)",
+    "targetingDefault": "strongest",
+    "upgrade": {
+      "rangeStep": 0.1,
+      "damageStep": 0.42,
+      "firerateStep": 0.14
+    }
+  }
+]

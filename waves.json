@@ -1,0 +1,87 @@
+{
+  "economy": {
+    "startHealth": 100,
+    "startResources": 1500,
+    "upgradeCostMul": {
+      "to2": 0.6,
+      "to3": 0.9
+    },
+    "sellRefundMul": 0.7
+  },
+  "wave": {
+    "baseEnemies": 3,
+    "enemiesPerWave": 2,
+    "bossEvery": 5,
+    "bossCount": 1,
+    "spawnEveryMs": 780,
+    "bossDelayMs": 1100
+  },
+  "scaling": {
+    "baseSpeed": 1.2,
+    "speedPerWave": 0.15,
+    "baseHealth": 60,
+    "healthPerWave": 12
+  },
+  "chances": {
+    "fast": {
+      "base": 0.1,
+      "perWave": 0.02,
+      "cap": 0.35
+    },
+    "armored": {
+      "startWave": 4,
+      "base": 0.05,
+      "perWave": 0.02,
+      "cap": 0.3
+    }
+  },
+  "archetypes": {
+    "standard": {
+      "name": "Стандартная цель",
+      "icon": "●",
+      "color": "#B86B5F",
+      "speedMul": 1.0,
+      "hpMul": 1.0,
+      "dmgMul": 1.0,
+      "reward": 75,
+      "leakDamage": 15,
+      "size": 12
+    },
+    "fast": {
+      "name": "Быстрая цель",
+      "icon": "⚡",
+      "color": "#47D7FF",
+      "speedMul": 1.45,
+      "hpMul": 0.75,
+      "dmgMul": 1.0,
+      "reward": 60,
+      "leakDamage": 12,
+      "size": 10
+    },
+    "armored": {
+      "name": "Бронированная цель",
+      "icon": "🛡",
+      "color": "#FFA500",
+      "speedMul": 0.85,
+      "hpMul": 1.75,
+      "dmgMul": 0.75,
+      "reward": 110,
+      "leakDamage": 18,
+      "size": 13
+    },
+    "boss": {
+      "name": "Босс",
+      "icon": "☄️",
+      "color": "#B45CFF",
+      "speedMul": 0.7,
+      "hpMul": 4.2,
+      "baseHp": 260,
+      "hpPerWave": 28,
+      "dmgMul": 0.65,
+      "reward": 350,
+      "leakDamage": 35,
+      "size": 18,
+      "isBoss": true
+    }
+  }
+}

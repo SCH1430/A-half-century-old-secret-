@@ -1,0 +1,41 @@
+{
+  "name": "Проект 1430 — Г.В. Кисунько",
+  "short_name": "Проект 1430",
+  "description": "Интерактивный проект о Г.В. Кисунько: текстовый квест, «Полигон испытаний» и галерея.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0b0d19",
+  "theme_color": "#0b0d19",
+  "lang": "ru",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-192-maskable.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icons/icon-512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "categories": [
+    "education",
+    "games"
+  ],
+  "screenshots": []
+}
